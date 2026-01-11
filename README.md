@@ -1,1 +1,192 @@
-# laravel-docker-template
+# 模擬案件（中級）　 coachtech 勤怠管理アプリ（coachtech-attendance-management）
+
+## 環境構築
+
+リポジトリの設定
+
+    ・　公開されているクローン元のリンク（SSH）をCodeボタンから取得
+
+    ・　git clone リンク
+            （コマンド実行後、lsで確認）
+
+Docker の設定
+
+    ・　docker-compose up -d --build
+
+    ・　code .
+
+    ・　docker-compose.yml の修正
+            (1行目のversionをコメントアウト⇒修正後はコンテナ再構築)
+
+Laravel のパッケージのインストール
+
+    ・　docker-compose exec php bash
+
+    ・　composer install
+            （composer -vでインストールの確認）
+
+    ・　composer require laravel/fortify
+                            （認証機能）
+
+.env ファイルの作成
+
+    ・　cp .env.example .env
+
+    ・　.envファイルの編集（以下の環境変数を追加）
+            （修正後は、必ずphp artisan config:clearでキャッシュクリア）
+
+        DB_CONNECTION=mysql
+        DB_HOST=mysql
+        DB_PORT=3306
+        DB_DATABASE=laravel_db
+        DB_USERNAME=laravel_user
+        DB_PASSWORD=laravel_pass
+
+        ### MailHogの設定（メール確認用）
+        MAIL_MAILER=smtp
+        MAIL_HOST=mailhog
+        MAIL_PORT=1025
+        MAIL_USERNAME=null
+        MAIL_PASSWORD=null
+        MAIL_FROM_ADDRESS="no-reply@verify-email-1.com" # 開発環境用のアドレスを設定
+        MAIL_FROM_NAME="${APP_NAME}"
+
+view ファイルの作成
+
+    ・　viewファイルの作成
+
+    ・　php artisan make:controller
+
+    ・　web.phpの修正
+
+    ・　php artisan key:generate
+
+マイグレーションの実行
+
+    ・　php artisan make:model [モデル名] -m
+            (マイグレーションテーブルとモデルを同時作成)
+
+    ・　マイグレーションファイルの編集
+
+    ・　php artisan migrate
+
+ダミーデータの作成
+
+    ・　php artisan make:factory
+
+    ・　php artisan make:seeder
+
+    ・　作成したシーダーファイルをDatabaseSeeder.phpに登録
+
+    ・　php artisan db:seed
+
+認証機能とシンボリックリンクの作成
+
+    ・認証機能（Fortify）
+        php artisan vendor:publish --provider="Laravel\Fortify\FortifyServiceProvider"
+
+    ・シンボリックリンク
+        php artisan storage:link
+
+## テスト環境の準備と実行
+
+    ・テスト用データベースの準備（config/database.phpの編集）
+
+        'mysql_test' => [
+            'driver' => 'mysql',
+            'url' => env('DATABASE_URL'),
+            'host' => env('DB_HOST', 'mysql'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => env('DB_DATABASE', 'demo_test'),
+            'username' => env('DB_USERNAME', 'root'),
+            'password' => env('DB_PASSWORD', 'root'),
+            　　・・・以下mysqlと同じ記述
+        ]
+
+    .env.testing ファイルの作成（テスト用.envファイルの作成）
+
+    ・　cp .env .env.testing
+
+    ・　.env.testingファイルの編集（以下の環境変数を追加）
+            （修正後は、必ずphp artisan config:clearでキャッシュクリア）
+
+        APP_ENV=test
+        APP_KEY=
+            （一度キーを空にして、php artisan key:generate --env=testingを実行後、
+            編集したらphp artisan config:clearを実行）
+
+        DB_CONNECTION=mysql
+        DB_HOST=mysql
+        DB_PORT=3306
+        DB_DATABASE=demo_test
+        DB_USERNAME=root
+        DB_PASSWORD=root
+
+    ・phpunit.xmlの編集
+
+        <server name="DB_CONNECTION" value="mysql_test"/>
+        <server name="DB_DATABASE" value="demo_test"/>
+
+    ・テスト用データベースの作成
+        php artisan migrate --seed --env=testing
+
+    テスト実行前に、php artisan config:clearを実行すること。
+
+    ・全テスト実行
+        vendor/bin/phpunit
+
+    ・個別テスト実行
+        vendor/bin/phpunit tests/Feature/[ファイル名]
+
+## 使用技術
+
+バージョン情報
+
+    ・　ubuntu 24.04.2 LTS (GNU/Linux 6.6.87.1-microsoft-standard-WSL2 x86_64)
+
+    ・　Docker Desktop 4.44.2
+
+    ・　php:8.1-fpm
+
+    ・　Laravel 8.83.29
+
+    ・　Composer 2.8.10
+            PHP version 8.1.33 (/usr/local/bin/php)
+
+    ・　MySQL 8.0.26
+
+開発言語
+
+    ・　HTML5・CSS
+
+    ・　Laravel PHP
+
+    ・　Command Line
+
+    ・　MySQL
+
+    ・　JavaScript
+
+## テーブル仕様書
+
+![table1](.png)
+![table2](.png)
+![table3](.png)
+![table4](.png)
+![table5](.png)
+![table6](.png)
+![table7](.png)
+![table8](.png)
+![table9](.png)
+
+## ER 図
+
+![ER図](er-diagram.png)
+
+## URL
+
+開発環境 http://localhost/
+
+phpMyAdmin http://localhost:8080/
+
+mailhog http://localhost:8025
