@@ -121,131 +121,80 @@ body {
     align-items: center;
 }
 
-.form-container {
-    text-align: center;
-    width: 100%;
-    max-width: 900px;
-    height: auto;
-    border-radius: 24px;
-    padding: 40px;
+/* 打刻エリアのレイアウト */
+.stamp-container {
+    padding-top: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-    /* 子要素（ロゴからリンクまで）を縦に並べるためのflex設定 */
+.stamp-wrapper {
+    text-align: center;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: stretch;
-}
-
-.page-title {
-    font-size: 24px;
-    font-weight: bold;
-    border-left: 8px solid #000000;
-    padding-left: 15px;
-    margin-bottom: 40px;
-    /* 幅を100%にして左端に固定 */
-    width: 100%;
-    text-align: left;
-}
-
-.page-title {
-    font-size: 24px;
-    font-weight: bold;
-    border-left: 8px solid #000000;
-    padding-left: 15px;
-    margin-bottom: 40px;
-    text-align: left;
-}
-
-/* フォームグループ（横並び） */
-.form-group {
-    background-color: #FFFFFF;
-    display: flex;
     align-items: center;
-    padding: 20px 0;
-    border-bottom: 1px solid #EEEEEE;
-}
-
-.form-label {
-    width: 200px;
-    /* ラベルの幅を固定 */
-    font-weight: bold;
-    color: #737373;
-    text-align: left;
-    margin-left: 100px;
-}
-
-.form-text {
-    font-weight: bold;
-    font-size: 16px;
-    flex: 1;
-    text-align: left;
-    margin-left: 35px;
-    /* ❗ 追加: 姓名の間隔を広げる設定 */
-    display: flex;
     gap: 20px;
 }
 
-.form-row-date {
+/* ステータスバッジ（丸角のグレー枠） */
+.status-badge {
+    background-color: #C8C8C8;
+    color: #696969;
+    padding: 4px 16px;
+    border-radius: 20px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.date-display {
+    font-size: 40px;
+    font-weight: bold;
+}
+
+.time-display {
+    font-size: 80px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* ❗ 2つのボタンを横並びで中央に配置する設定 */
+.btn-group {
     display: flex;
-    justify-content: flex-start;
-    margin-left: 35px;
-    gap: 110px;
-    font-weight: bold;
-    font-size: 16px;
+    gap: 40px;
+    /* ボタン同士の間隔 */
+    justify-content: center;
 }
 
-.form-row-input {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-/* 入力フィールド */
-.input-field {
-    width: 120px;
-    height: 35px;
-    border: 1px solid #CCCCCC;
-    border-radius: 4px;
-    text-align: center;
-    font-size: 16px;
-    font-weight: bold;
-}
-
-.textarea-field {
-    width: 285px;
-    height: 80px;
-    border: 1px solid #CCCCCC;
-    border-radius: 4px;
-    padding: 10px;
-    resize: none;
-    font-size: 14px;
-    font-weight: bold;
-}
-
-.range-separator {
-    font-weight: bold;
-}
-
-/* 修正ボタン */
-.form-button-area {
-    margin-top: 40px;
-    display: flex;
-    justify-content: flex-end;
-    /* 右寄せ */
-}
-
-.submit-button {
-    background-color: #000000;
-    color: #FFFFFF;
-    width: 150px;
-    height: 45px;
+/* ❗ ボタンの文字を完璧に中央へ配置 */
+.stamp-btn {
+    width: 160px;
+    height: 50px;
     border: none;
     border-radius: 4px;
-    font-weight: bold;
     font-size: 18px;
+    font-weight: bold;
     cursor: pointer;
-    /* ❗ 文字の中央配置 */
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+/* 黒背景のメインボタン */
+.stamp-btn.primary {
+    background-color: #000000;
+    color: #FFFFFF;
+}
+
+/* 白背景のサブボタン（休憩入・戻） */
+.stamp-btn.secondary {
+    background-color: #FFFFFF;
+    color: #000000;
+    border: 1px solid #CCCCCC;
+}
+
+.finish-message {
+    font-size: 20px;
+    font-weight: bold;
+    color: #737373;
 }
