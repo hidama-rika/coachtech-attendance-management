@@ -19,15 +19,15 @@
 
             <nav class="nav-menu">
 
-                <a href="/mypage" class="nav-button menu-button">
+                <a href="/admin/attendance/list" class="nav-button menu-button">
                     <span class="nav-text">勤怠一覧</span>
                 </a>
 
-                <a href="/mypage" class="nav-button menu-button">
+                <a href="/admin/staff/list" class="nav-button menu-button">
                     <span class="nav-text">スタッフ一覧</span>
                 </a>
 
-                <a href="/sell" class="nav-button menu-button">
+                <a href="/admin/stamp_correction_request/list" class="nav-button menu-button">
                     <span class="nav-text">申請一覧</span>
                 </a>
 
