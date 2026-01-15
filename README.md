@@ -169,13 +169,13 @@ view ファイルの作成
 
 ## テーブル仕様書
 
-![table1](<users(2).png>)
-![table2](attendances.png)
-![table3](rests.png)
-![table4](attendacce_correct_requests.png)
-![table5](correction_attendances_details.png)
-![table6](correction_rest_details.png)
-![table7](notifications.png)
+![table1](<src/users(2).png>)
+![table2](src/attendances.png)
+![table3](src/rests.png)
+![table4](src/attendacce_correct_requests.png)
+![table5](src/correction_attendances_details.png)
+![table6](src/correction_rest_details.png)
+![table7](src/notifications.png)
 
 ## ER 図
 
