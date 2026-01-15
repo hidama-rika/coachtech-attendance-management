@@ -172,8 +172,8 @@ view ファイルの作成
 ![table1](<src/users(2).png>)
 ![table2](src/attendances.png)
 ![table3](src/rests.png)
-![table4](src/attendacce_correct_requests.png)
-![table5](src/correction_attendances_details.png)
+![table4](src/attendance_correct_requests.png)
+![table5](src/correction_attendance_details.png)
 ![table6](src/correction_rest_details.png)
 ![table7](src/notifications.png)
 
