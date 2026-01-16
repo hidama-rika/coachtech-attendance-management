@@ -170,15 +170,15 @@ view ファイルの作成
 ## テーブル仕様書
 
 ![table1](<users(2).png>)
-![table2](.png)
+![table2](attendances.png)
 ![table3](rests.png)
 ![table4](attendance_correct_requests.png)
-![table5](.png)
+![table5](correction_attendance_details.png)
 ![table6](correction_rest_details.png)
 
 ## ER 図
 
-![ER図](.png)
+![ER図](er-diagram.png)
 
 ## URL
 
