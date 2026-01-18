@@ -13,7 +13,7 @@ class AttendanceCorrectionRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,18 @@ class AttendanceCorrectionRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'check_in'  => ['required', 'date_format:H:i'],
+            'check_out' => ['required', 'date_format:H:i', 'after:check_in'],
+            'remark'    => ['required', 'string'],
+            'reason'    => ['required', 'string'], // 申請理由も必須
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'check_out.after' => '出勤時間もしくは退勤時間が不適切な値です', // FN029-1
+            'remark.required' => '備考を記入してください', // FN029-4
         ];
     }
 }

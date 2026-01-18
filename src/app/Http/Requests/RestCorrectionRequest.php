@@ -13,7 +13,7 @@ class RestCorrectionRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,32 @@ class RestCorrectionRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'rests.*.start_time' => [
+                'required',
+                'date_format:H:i',
+                'after_or_equal:check_in', // 出勤時間以降であること
+                'before_or_equal:check_out' // 退勤時間以前であること
+            ],
+            'rests.*.end_time' => [
+                'required',
+                'date_format:H:i',
+                // afterルールは、同じ配列内のstart_timeと比較される
+                'after:rests.*.start_time', // 開始より後であること
+                'before_or_equal:check_out' // 退勤時間以前であること
+            ],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            // FN029-2
+            'rests.*.start_time.after_or_equal' => '休憩時間が不適切な値です',
+            'rests.*.start_time.before_or_equal' => '休憩時間が不適切な値です',
+
+            // FN029-3
+            'rests.*.end_time.after' => '休憩時間もしくは退勤時間が不適切な値です',
+            'rests.*.end_time.before_or_equal' => '休憩時間もしくは退勤時間が不適切な値です',
         ];
     }
 }
