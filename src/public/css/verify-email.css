@@ -4,7 +4,7 @@
 
 /* 横スクロールを強制的に有効にする */
 html {
-    overflow-x: hidden;
+    overflow-x: auto;
 }
 
 /*  ヘッダー共通スタイル */
@@ -198,4 +198,24 @@ body {
 
 .verify-email-link:hover {
     text-decoration: underline;
+}
+
+/* ---------------------------------------------------------------------- */
+/* 3. レスポンシブ対応 (要件 DG02 準拠) */
+/* ---------------------------------------------------------------------- */
+
+@media screen and (max-width: 1540px) {
+
+    /* ❗ 修正：クラス名を今回の画面のものに変更します */
+    .verify-email-form-container {
+        width: 90%;
+        max-width: 720px;
+        padding: 0 20px;
+    }
+
+    .verify-message-sent,
+    .verify-instruction {
+        /* 画面が狭い時に文字サイズを少し調整（任意） */
+        font-size: 1.1rem;
+    }
 }

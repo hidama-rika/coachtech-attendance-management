@@ -4,7 +4,7 @@
 
 /* 横スクロールを強制的に有効にする */
 html {
-    overflow-x: scroll;
+    overflow-x: auto;
 }
 
 /*  ヘッダー共通スタイル */
@@ -109,7 +109,8 @@ body {
     /* ヘッダーの高さ分、コンテンツを下にずらす */
 
     /* ❗ 修正: 画面の中央に配置するための設定 */
-    width: 1515px;
+    width: 100%;
+    max-width: 1515px;
     /* Figmaの幅に合わせる */
     margin: 0 auto;
     /* 中央寄せ */
@@ -280,8 +281,6 @@ body {
         max-width: 1800px;
         /* 必要に応じてコンテンツの最大幅を広げる */
     }
-
-    /* その他、超広幅画面でのデザイン調整があれば追記 */
 }
 
 
@@ -290,18 +289,31 @@ body {
 
     .container,
     .header-content {
-        /* 画面端に余白を作る */
         width: 95%;
+        /* 画面端の余白 */
     }
 
     .form-group {
-        /* 狭い画面ではラベルの左マージンを減らすなどの調整 */
-        justify-content: center;
+        justify-content: flex-start;
+        /* 左寄せのまま中央に寄せる */
+        height: auto;
+        /* 高さを可変にする */
+        min-height: 80px;
+        padding: 15px 20px;
     }
 
     .form-label {
-        margin-left: 0;
+        margin-left: 20px;
+        /* 大きすぎるマージンを削減 */
         width: 150px;
+    }
+
+    .form-text,
+    .form-row-date,
+    .form-row-text,
+    .form-text-remark {
+        margin-left: 20px;
+        /* ラベルとの間隔を一定にする */
     }
 }
 
@@ -312,8 +324,6 @@ body {
         padding: 20px;
     }
 
-    .form-text {
-        margin-left: 10px;
-        gap: 10px;
-    }
+    /* 1000px以下など、さらに狭くなった場合は縦並びも検討 */
+    /* .form-group { flex-direction: column; align-items: flex-start; } */
 }

@@ -64,7 +64,7 @@
                 {{-- パスワード確認 --}}
                 <div class="form-group">
                     <label for="confirmed-password">パスワード確認</label>
-                    <input id="confirmed-password" type="confirmed-password" class="form-control" name="confirmed-password" required placeholder="確認用パスワードを入力">
+                    <input id="confirmed-password" type="password" class="form-control" name="confirmed-password" required placeholder="確認用パスワードを入力">
                     <p class="register-form__error-message">
                         @error('confirmed-password')
                         {{ $message }}

@@ -4,7 +4,7 @@
 
 /* 横スクロールを強制的に有効にする */
 html {
-    overflow-x: scroll;
+    overflow-x: auto;
 }
 
 /*  ヘッダー共通スタイル */
@@ -109,7 +109,8 @@ body {
     /* ヘッダーの高さ分、コンテンツを下にずらす */
 
     /* ❗ 修正: 画面の中央に配置するための設定 */
-    width: 1515px;
+    width: 100%;
+    max-width: 1515px;
     /* Figmaの幅に合わせる */
     margin: 0 auto;
     /* 中央寄せ */
@@ -197,4 +198,51 @@ body {
     font-size: 26px;
     font-weight: 700;
     color: #000000;
+}
+
+/* ---------------------------------------------------------------------- */
+/* レスポンシブ対応のためのメディアクエリ (要件 DG02 に合わせる) */
+/* ---------------------------------------------------------------------- */
+
+/* 1. 超広幅PCモニター対応 (1541px以上) */
+@media screen and (min-width: 1541px) {
+    .header-content {
+        max-width: 1800px;
+    }
+}
+
+/* 2. 1400px付近の画面対応 (要件 DG02 に合わせる) */
+@media screen and (max-width: 1540px) {
+
+    /* メインコンテナをこの画面の .stamp-container に修正 */
+    .stamp-container,
+    .header-content {
+        width: 95%;
+        /* 画面端の余白を確保 */
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+/* 3. さらに狭い画面用 (例: タブレットや小さなPC) */
+@media screen and (max-width: 1399px) {
+    .time-display {
+        font-size: 60px;
+        /* 時計が大きすぎてはみ出すのを防ぐ */
+    }
+
+    .date-display {
+        font-size: 30px;
+    }
+
+    .btn-group {
+        gap: 20px;
+        /* ボタン同士の間隔を少し詰める */
+    }
+
+    .stamp-btn {
+        width: 180px;
+        /* ボタンの横幅を調整 */
+        height: 60px;
+    }
 }

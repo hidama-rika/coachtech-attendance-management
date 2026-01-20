@@ -4,7 +4,7 @@
 
 /* 横スクロールを強制的に有効にする */
 html {
-    overflow-x: scroll;
+    overflow-x: auto;
 }
 
 /*  ヘッダー共通スタイル */
@@ -109,7 +109,8 @@ body {
     /* ヘッダーの高さ分、コンテンツを下にずらす */
 
     /* ❗ 修正: 画面の中央に配置するための設定 */
-    width: 1515px;
+    width: 100%;
+    max-width: 1515px;
     /* Figmaの幅に合わせる */
     margin: 0 auto;
     /* 中央寄せ */
@@ -269,52 +270,42 @@ body {
 }
 
 /* ---------------------------------------------------------------------- */
-/* レスポンシブ対応のためのメディアクエリ (画面設計のデザイン要件 DG02 に合わせる)*/
+/* レスポンシブ対応のためのメディアクエリ (要件 DG02 に合わせる) */
 /* ---------------------------------------------------------------------- */
 
 /* 1. 超広幅PCモニター対応 (1541px以上) */
-/* 非常に広い画面幅でコンテンツを広げる、または特定の要素のサイズを拡大する場合に利用 */
 @media screen and (min-width: 1541px) {
-
-    /* 1515pxのコンテンツ幅を、例えば1800pxに広げる場合 */
     .header-content {
         max-width: 1800px;
-        /* 必要に応じてコンテンツの最大幅を広げる */
     }
-
-    /* その他、超広幅画面でのデザイン調整があれば追記 */
 }
-
 
 /* 2. 1400px付近の画面対応 (要件 DG02 に合わせる) */
 @media screen and (max-width: 1540px) {
 
-    .container,
+    /* .container を今回のメインコンテナ .list-container に修正 */
+    .list-container,
     .header-content {
-        /* 画面端に余白を作る */
         width: 95%;
+        /* 画面端に余白を確保 */
     }
 
-    .form-group {
-        /* 狭い画面ではラベルの左マージンを減らすなどの調整 */
-        justify-content: center;
-    }
-
-    .form-label {
-        margin-left: 0;
-        width: 150px;
-    }
+    /* ❗ 不要な .form-group, .form-label の記述を削除しました */
 }
 
 /* 3. さらに狭い画面用 */
 @media screen and (max-width: 1399px) {
-    .form-container {
+
+    /* .form-container を今回の .list-form-container に修正 */
+    .list-form-container {
         width: 95%;
         padding: 20px;
     }
 
-    .form-text {
-        margin-left: 10px;
-        gap: 10px;
+    /* ❗ 不要な .form-text の記述を削除しました */
+
+    /* テーブルの横はみ出し防止 */
+    .table-wrapper {
+        overflow-x: auto;
     }
 }
