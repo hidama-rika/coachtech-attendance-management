@@ -66,9 +66,9 @@ body {
     margin: 0;
     font-family: sans-serif;
     /* ❗ 追加/修正: bodyの最小幅を保証し、横スクロールを発生させる */
-    min-width: 1515px;
-    height: 1202px;
-    overflow-x: scroll;
+    width: 100%;
+    height: auto;
+    overflow-x: hidden;
 }
 
 .login-container {
@@ -95,27 +95,23 @@ body {
 .login-form-container {
     background-color: #FFFFFF;
     text-align: center;
-    width: 680px;
-    height: 656px;
-    top: 200px;
-    left: 416px;
+    width: 900px;
+    max-width: 100%;
+    height: auto;
     border-radius: 24px;
     padding: 40px;
 
     /* 子要素（ロゴからリンクまで）を縦に並べるためのflex設定 */
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
 }
 
 .form-title {
     /* ログイン の文字スタイル */
+    width: 100%;
     display: flex;
     justify-content: center;
-    width: 144;
-    height: 46.04px;
-    top: 100px;
-    left: 257px;
     margin-bottom: 70px;
     opacity: 1;
     color: #333333;
@@ -123,10 +119,19 @@ body {
     font-family: Inter;
     font-weight: 700;
     font-style: Bold;
-    font-size: 36px;
+    font-size: 2.25rem;
     line-height: 100%;
     letter-spacing: 0%;
     text-align: center;
+}
+
+/* --- フォーム各パーツの幅調整 --- */
+.form-group,
+.form-control,
+.login-btn {
+    /* ❗ フォーム自体の最大幅を制限し、中央に配置しやすくします */
+    width: 100%;
+    max-width: 680px;
 }
 
 .form-group {
@@ -145,7 +150,7 @@ body {
 }
 
 .form-control {
-    width: 680px;
+    width: 900px;
     height: 57.09px;
     top: 132.55px;
     border: 1px solid #5F5F5F;
@@ -165,7 +170,7 @@ body {
     justify-content: center;
     align-items: center;
     /* ログインボタンのグラデーションとスタイル */
-    width: 680px;
+    width: 900px;
     height: 65.25px;
     padding: 10px;
     margin-top: 50px;
@@ -181,20 +186,21 @@ body {
 
 .login-btn:hover {
     opacity: 0.9;
-    box-shadow: 0 10px 15px -3px rgba(201, 79, 3, 0.5);
+    box-shadow: 0 10px 15px -3px rgba(43, 43, 43, 0.5);
 }
 
 .register-link {
     /* 会員登録はこちら のリンクスタイル */
-    width: 257px;
+    width: 100%;
     height: 53.29px;
     display: block;
+    justify-content: center;
+    align-items: center;
     margin-top: 50px;
     font-weight: 400;
-    font-size: 20px;
+    font-size: 1.25rem;
     color: #0073CC;
     text-decoration: none;
-    gap: 10px;
 }
 
 .register-link:hover {

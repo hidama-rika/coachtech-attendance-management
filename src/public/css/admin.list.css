@@ -110,7 +110,7 @@ body {
 
     /* ❗ 修正: 画面の中央に配置するための設定 */
     width: 100%;
-    max-width: 1515px;
+    /* max-width: 1515px; */
     /* Figmaの幅に合わせる */
     margin: 0 auto;
     /* 中央寄せ */

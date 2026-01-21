@@ -96,6 +96,7 @@ body {
     font-family: sans-serif;
     /* ❗ 追加/修正: bodyの最小幅を保証し、横スクロールを発生させる */
     width: 100%;
+    max-width: 1515px;
     height: auto;
     overflow-x: hidden;
 }

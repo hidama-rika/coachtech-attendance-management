@@ -40,8 +40,7 @@ class CreateNewUser implements CreatesNewUsers
             // $this->passwordRules() 内で 'confirmed' が含まれています
             'password' => $this->passwordRules(),
 
-            // 確認用パスワード：messagesで個別に制御するために明示的に追加
-            'password_confirmation' => ['required', 'string', 'min:8'],
+            //password_confirmation への直接のルール記述を削除（メッセージ表示を防ぐ）
         ], [
             // --- カスタムエラーメッセージ (仕様書 FN003 準拠) ---
 
@@ -56,11 +55,9 @@ class CreateNewUser implements CreatesNewUsers
             'password.min' => 'パスワードは8文字以上で入力してください',
 
             // password_confirmation (messagesでpassword_confirmationを参照するには、rulesに明記が必要)
-            'password_confirmation.required' => 'パスワードを入力してください', // FN003 3.と合わせて「未入力」のメッセージを統一
-            'password_confirmation.min' => 'パスワードは8文字以上で入力してください',
-
-            // password.confirmed (仕様書 FN003 - 3.1. パスワードと一致しません)
+            // ❗ パスワードが一致しない時のメッセージ
             'password.confirmed' => 'パスワードと一致しません',
+
         ])->validate();
 
         return User::create([
