@@ -65,7 +65,8 @@ html {
 
 body {
     margin: 0;
-    font-family: sans-serif;
+    font-family: 'Inter', 'sans-serif';
+    font-weight: 700;
 }
 
 .register-container {
@@ -87,16 +88,16 @@ body {
 .register-form-container {
     background-color: #FFFFFF;
     text-align: center;
-    max-width: 680px;
-    /* 最大幅は維持 */
     width: 100%;
-    /* 画面が狭いときは100%に */
-    margin: 100px auto 50px;
+    max-width: 680px;
+    height: auto;
+    border-radius: 24px;
     padding: 40px;
+
+    /* 子要素（ロゴからリンクまで）を縦に並べるためのflex設定 */
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* stretchから中央寄せに変更 */
 }
 
 .form-title {
@@ -105,8 +106,9 @@ body {
     display: flex;
     justify-content: center;
     margin-bottom: 70px;
+    margin-top: 50px;
     opacity: 1;
-    color: #333333;
+    color: #000000;
 
     font-family: Inter;
     font-weight: 700;
@@ -137,7 +139,7 @@ body {
     display: block;
     font-weight: 600;
     font-size: 1.5rem;
-    color: #333333;
+    color: #000000;
     margin-bottom: 5px;
 }
 
@@ -159,7 +161,6 @@ body {
 }
 
 .register-btn {
-    /* ❗ 文字を中央に配置 [cite: 2025-10-22] */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -167,14 +168,14 @@ body {
     width: 680px;
     height: 65.25px;
     padding: 10px;
-    margin-top: 50px;
+    margin-top: 90px;
     border: none;
     border-radius: 5px;
-    font-size: 1.625rem;
+    font-size: 1.5rem;
     font-weight: 700;
     color: #FFFFFF;
     cursor: pointer;
-    background-color: #333333;
+    background-color: #000000;
     transition: opacity 0.3s;
     flex-grow: 1;
     /* 👈 これを追加: 利用可能な幅を最大化 */
@@ -227,8 +228,6 @@ body {
     }
 
     .form-title {
-        font-size: 1.8rem;
-        /* 画面に合わせてタイトルを少し小さく */
         width: 100%;
     }
 }

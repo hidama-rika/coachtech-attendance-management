@@ -66,6 +66,8 @@ html {
 /* ログアウトとマイページのスタイルを統合し、リンクのような見た目にする */
 .logout-button,
 .menu-button {
+    font-family: 'Inter', 'sans-serif';
+    font-weight: 700;
     width: 140px;
     /* 幅をテキストに合わせる */
     height: 44px;
@@ -85,7 +87,7 @@ html {
 
 .nav-text {
     color: #FFFFFF;
-    font-size: 20px;
+    font-size: 1.25rem;
     display: block;
     margin: auto 0;
     white-space: nowrap;
@@ -93,10 +95,10 @@ html {
 
 body {
     margin: 0;
-    font-family: sans-serif;
+    font-family: 'Inter', 'sans-serif';
+    font-weight: 700;
     /* ❗ 追加/修正: bodyの最小幅を保証し、横スクロールを発生させる */
     width: 100%;
-    max-width: 1515px;
     height: auto;
     overflow-x: hidden;
 }
@@ -139,8 +141,9 @@ body {
 }
 
 .page-title {
-    font-size: 24px;
-    font-weight: bold;
+    font-family: 'Inter', 'sans-serif';
+    font-size: 2rem;
+    font-weight: 700;
     border-left: 8px solid #000000;
     padding-left: 15px;
     margin-bottom: 40px;
@@ -166,8 +169,9 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
-    font-weight: bold;
-    font-size: 18px;
+    font-family: 'Inter', 'sans-serif';
+    font-weight: 700;
+    font-size: 1rem;
 }
 
 .calendar-icon {
@@ -193,7 +197,7 @@ body {
 .date-pager-btn {
     text-decoration: none;
     color: #737373;
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: bold;
 }
 
@@ -203,7 +207,7 @@ body {
     border-radius: 4px;
     overflow: hidden;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: bold;
 }
 
@@ -216,8 +220,8 @@ body {
 .attendance-table th {
     background-color: #FFFFFF;
     color: #737373;
-    font-size: 16px;
-    font-weight: bold;
+    font-size: 1rem;
+    font-weight: 700;
     text-align: center;
     padding: 15px;
     border-bottom: 3px solid #EEEEEE;
@@ -239,7 +243,7 @@ body {
 .detail-link {
     color: #000000;
     text-decoration: none;
-    font-weight: bold;
+    font-weight: 700;
 }
 
 .detail-link:hover {
@@ -262,7 +266,7 @@ body {
     border: none;
     border-radius: 4px;
     font-weight: bold;
-    font-size: 18px;
+    font-size: 1.375rem;
     cursor: pointer;
     /* ❗ 文字の中央配置 */
     display: flex;
@@ -285,13 +289,11 @@ body {
 @media screen and (max-width: 1540px) {
 
     /* .container を今回のメインコンテナ .list-container に修正 */
-    .list-container,
+    .list-form-container,
     .header-content {
         width: 95%;
         /* 画面端に余白を確保 */
     }
-
-    /* ❗ 不要な .form-group, .form-label の記述を削除しました */
 }
 
 /* 3. さらに狭い画面用 */

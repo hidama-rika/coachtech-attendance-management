@@ -66,6 +66,8 @@ html {
 /* ログアウトとマイページのスタイルを統合し、リンクのような見た目にする */
 .logout-button,
 .menu-button {
+    font-family: 'Inter', 'sans-serif';
+    font-weight: 700;
     width: 140px;
     /* 幅をテキストに合わせる */
     height: 44px;
@@ -85,7 +87,7 @@ html {
 
 .nav-text {
     color: #FFFFFF;
-    font-size: 20px;
+    font-size: 1.25rem;
     display: block;
     margin: auto 0;
     white-space: nowrap;
@@ -93,7 +95,8 @@ html {
 
 body {
     margin: 0;
-    font-family: sans-serif;
+    font-family: 'Inter', 'sans-serif';
+    font-weight: 700;
     /* ❗ 追加/修正: bodyの最小幅を保証し、横スクロールを発生させる */
     width: 100%;
     height: auto;
@@ -110,7 +113,7 @@ body {
 
     /* ❗ 修正: 画面の中央に配置するための設定 */
     width: 100%;
-    /* max-width: 1515px; */
+    max-width: none;
     /* Figmaの幅に合わせる */
     margin: 0 auto;
     /* 中央寄せ */
@@ -138,7 +141,7 @@ body {
 }
 
 .page-title {
-    font-size: 24px;
+    font-size: 2rem;
     font-weight: bold;
     border-left: 8px solid #000000;
     padding-left: 15px;
@@ -166,7 +169,7 @@ body {
     align-items: center;
     gap: 10px;
     font-weight: bold;
-    font-size: 18px;
+    font-size: 1rem;
 }
 
 .calendar-icon {
@@ -192,7 +195,7 @@ body {
 .date-pager-btn {
     text-decoration: none;
     color: #737373;
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: bold;
 }
 
@@ -202,7 +205,7 @@ body {
     border-radius: 4px;
     overflow: hidden;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: bold;
 }
 
@@ -215,7 +218,7 @@ body {
 .attendance-table th {
     background-color: #FFFFFF;
     color: #737373;
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: bold;
     text-align: center;
     padding: 15px;
@@ -259,7 +262,7 @@ body {
 /* 2. 1400px付近の画面対応 (要件 DG02 に合わせる) */
 @media screen and (max-width: 1540px) {
 
-    .list-container,
+    .list-form-container,
     .header-content {
         /* 画面端に余白を作る */
         width: 95%;

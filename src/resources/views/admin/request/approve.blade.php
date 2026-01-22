@@ -6,6 +6,9 @@
     <title>管理者-修正申請承認画面</title>
     <link rel="stylesheet" href="{{ asset('css/sanitize.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin.requestapprove.css')}}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -98,7 +101,7 @@
 
                 {{-- 備考 --}}
                 <div class="form-group">
-                    <label class="form-label">電車遅延のため</label>
+                    <label class="form-label">備考</label>
                     <div class="form-text-remark">電車遅延のため</div>
                 </div>
 

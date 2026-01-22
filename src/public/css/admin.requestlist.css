@@ -66,6 +66,8 @@ html {
 /* ログアウトとマイページのスタイルを統合し、リンクのような見た目にする */
 .logout-button,
 .menu-button {
+    font-family: 'Inter', 'sans-serif';
+    font-weight: 700;
     width: 140px;
     /* 幅をテキストに合わせる */
     height: 44px;
@@ -93,7 +95,8 @@ html {
 
 body {
     margin: 0;
-    font-family: sans-serif;
+    font-family: 'Inter', 'sans-serif';
+    font-weight: 700;
     /* ❗ 追加/修正: bodyの最小幅を保証し、横スクロールを発生させる */
     width: 100%;
     height: auto;
@@ -138,7 +141,9 @@ body {
 }
 
 .page-title {
-    font-size: 24px;
+    font-family: 'Inter', 'sans-serif';
+    font-weight: 700;
+    font-size: 2rem;
     font-weight: bold;
     border-left: 8px solid #000000;
     padding-left: 15px;
@@ -159,7 +164,7 @@ body {
 
 .tab-item {
     text-decoration: none;
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: bold;
     color: #737373;
     padding: 10px 0;
@@ -189,8 +194,8 @@ body {
     border-radius: 4px;
     overflow: hidden;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    font-size: 16px;
-    font-weight: bold;
+    font-size: 1rem;
+    font-weight: 700;
 }
 
 .attendance-table {
@@ -202,8 +207,8 @@ body {
 .attendance-table th {
     background-color: #FFFFFF;
     color: #737373;
-    font-size: 16px;
-    font-weight: bold;
+    font-size: 1rem;
+    font-weight: 700;
     text-align: left;
     padding: 15px;
     border-bottom: 3px solid #EEEEEE;
@@ -225,7 +230,7 @@ body {
 .detail-link {
     color: #000000;
     text-decoration: none;
-    font-weight: bold;
+    font-weight: 700;
 }
 
 .detail-link:hover {
@@ -246,7 +251,7 @@ body {
 /* 2. 1400px付近の画面対応 (要件 DG02 に合わせる) */
 @media screen and (max-width: 1540px) {
 
-    .list-container,
+    .list-form-container,
     .header-content {
         width: 95%;
         /* 画面端に余白を確保 */

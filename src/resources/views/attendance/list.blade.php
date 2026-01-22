@@ -6,6 +6,9 @@
     <title>スタッフ-勤怠一覧画面</title>
     <link rel="stylesheet" href="{{ asset('css/sanitize.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin.staffattendancelist.css')}}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -82,7 +85,7 @@
                             <td class="text-center">18:00</td>
                             <td class="text-center">1:00</td>
                             <td class="text-center">8:00</td>
-                            <td class="text-center"><a href="/admin/attendance/1" class="detail-link">詳細</a></td>
+                            <td class="text-center"><a href="/attendance/detail/{id}" class="detail-link">詳細</a></td>
                         </tr>
                         {{-- 繰り返し分... --}}
                         @foreach(range(1, 5) as $i)
@@ -92,7 +95,7 @@
                             <td class="text-center">18:00</td>
                             <td class="text-center">1:00</td>
                             <td class="text-center">8:00</td>
-                            <td class="text-center"><a href="#" class="detail-link">詳細</a></td>
+                            <td class="text-center"><a href="/attendance/detail/{id}" class="detail-link">詳細</a></td>
                         </tr>
                         @endforeach
                     </tbody>

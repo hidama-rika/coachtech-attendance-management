@@ -67,6 +67,8 @@ html {
 /* ログアウトとマイページのスタイルを統合し、リンクのような見た目にする */
 .logout-button,
 .menu-button {
+    font-family: 'Inter', 'sans-serif';
+    font-weight: 700;
     width: 140px;
     /* 幅をテキストに合わせる */
     height: 44px;
@@ -86,7 +88,7 @@ html {
 
 .nav-text {
     color: #FFFFFF;
-    font-size: 20px;
+    font-size: 1.25rem;
     display: block;
     margin: auto 0;
     white-space: nowrap;
@@ -94,7 +96,8 @@ html {
 
 body {
     margin: 0;
-    font-family: sans-serif;
+    font-family: 'Inter', 'sans-serif';
+    font-weight: 700;
     /* ❗ 追加/修正: bodyの最小幅を保証し、横スクロールを発生させる */
     width: 100%;
     height: auto;
@@ -140,19 +143,8 @@ body {
 }
 
 .page-title {
-    font-size: 24px;
-    font-weight: bold;
-    border-left: 8px solid #000000;
-    padding-left: 15px;
-    margin-bottom: 40px;
-    /* 幅を100%にして左端に固定 */
-    width: 100%;
-    text-align: left;
-}
-
-.page-title {
-    font-size: 24px;
-    font-weight: bold;
+    font-size: 2rem;
+    font-weight: 700;
     border-left: 8px solid #000000;
     padding-left: 15px;
     margin-bottom: 40px;
@@ -164,43 +156,64 @@ body {
     background-color: #FFFFFF;
     display: flex;
     align-items: center;
-    padding: 20px 0;
+    padding: 25px 0;
     border-bottom: 1px solid #EEEEEE;
+    width: 100%;
 }
 
 .form-label {
-    width: 200px;
+    width: 250px;
     /* ラベルの幅を固定 */
+    font-size: 1rem;
     font-weight: bold;
     color: #737373;
     text-align: left;
+    padding-left: 40px;
+    flex-shrink: 0;
+}
+
+/* --- 名前表示などのテキストエリア --- */
+.form-text,
+.form-row-date {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    font-weight: 700;
+    font-style: Bold;
+    color: #000000;
+    margin-left: 0;
+    /* ラベル幅で制御するためマージンは不要 */
+}
+
+/* --- 名前・日付・入力欄の共通エリア --- */
+.form-text,
+.form-row-date,
+.form-row-input,
+.textarea-field {
+    /* ❗ 左側の余白を統一して綺麗に並べる */
     margin-left: 100px;
 }
 
-.form-text {
-    font-weight: bold;
-    font-size: 16px;
-    flex: 1;
-    text-align: left;
-    margin-left: 35px;
-    /* ❗ 追加: 姓名の間隔を広げる設定 */
-    display: flex;
-    gap: 20px;
+/* 姓名の間隔 */
+.name-display {
+    margin-left: 120px;
+    gap: 30px;
 }
 
+/* 年月日の間隔 */
 .form-row-date {
     display: flex;
-    justify-content: flex-start;
-    margin-left: 35px;
-    gap: 110px;
-    font-weight: bold;
-    font-size: 16px;
+    gap: 160px;
+    margin-left: 130px;
 }
 
+/* --- 入力フィールド（出勤・退勤・休憩） --- */
 .form-row-input {
+    flex: 1;
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 40px;
 }
 
 /* 入力フィールド */
@@ -210,22 +223,26 @@ body {
     border: 1px solid #CCCCCC;
     border-radius: 4px;
     text-align: center;
-    font-size: 16px;
-    font-weight: bold;
+    font-size: 1rem;
+    font-family: 'Inter', 'sans-serif';
+    font-weight: 700;
 }
 
+/* --- 備考（textarea） --- */
 .textarea-field {
-    width: 285px;
-    height: 80px;
+    width: 340px;
+    /* ❗ 横幅を画像に合わせて拡大 */
+    height: 100px;
     border: 1px solid #CCCCCC;
     border-radius: 4px;
-    padding: 10px;
     resize: none;
-    font-size: 14px;
-    font-weight: bold;
+    font-size: 1rem;
+    display: block;
+    margin-right: 225px;
 }
 
 .range-separator {
+    font-size: 20px;
     font-weight: bold;
 }
 
@@ -240,12 +257,12 @@ body {
 .submit-button {
     background-color: #000000;
     color: #FFFFFF;
-    width: 150px;
-    height: 45px;
+    width: 130px;
+    height: 50px;
     border: none;
     border-radius: 4px;
     font-weight: bold;
-    font-size: 18px;
+    font-size: 1.375rem;
     cursor: pointer;
     /* ❗ 文字の中央配置 */
     display: flex;
@@ -274,7 +291,7 @@ body {
 /* 2. 1400px付近の画面対応 (要件 DG02 に合わせる) */
 @media screen and (max-width: 1540px) {
 
-    .container,
+    .form-container,
     .header-content {
         /* 画面端に余白を作る */
         width: 95%;

@@ -64,7 +64,8 @@ html {
 
 body {
     margin: 0;
-    font-family: sans-serif;
+    font-family: 'Inter', 'sans-serif';
+    font-weight: 700;
     /* ❗ 追加/修正: bodyの最小幅を保証し、横スクロールを発生させる */
     width: 100%;
     height: auto;
@@ -95,8 +96,8 @@ body {
 .login-form-container {
     background-color: #FFFFFF;
     text-align: center;
-    width: 900px;
-    max-width: 100%;
+    width: 100%;
+    max-width: 680px;
     height: auto;
     border-radius: 24px;
     padding: 40px;
@@ -114,7 +115,7 @@ body {
     justify-content: center;
     margin-bottom: 70px;
     opacity: 1;
-    color: #333333;
+    color: #000000;
 
     font-family: Inter;
     font-weight: 700;
@@ -144,19 +145,19 @@ body {
 .form-group label {
     display: block;
     font-weight: 600;
-    font-size: 24px;
-    color: #333333;
+    font-size: 1.5rem;
+    color: #000000;
     margin-bottom: 5px;
 }
 
 .form-control {
-    width: 900px;
+    width: 680px;
     height: 57.09px;
     top: 132.55px;
     border: 1px solid #5F5F5F;
     border-radius: 4px;
     box-sizing: border-box;
-    font-size: 16px;
+    font-size: 1rem;
 }
 
 .form-control:hover {
@@ -170,17 +171,17 @@ body {
     justify-content: center;
     align-items: center;
     /* ログインボタンのグラデーションとスタイル */
-    width: 900px;
+    width: 680px;
     height: 65.25px;
     padding: 10px;
-    margin-top: 50px;
+    margin-top: 80px;
     border: none;
     border-radius: 5px;
-    font-size: 26px;
+    font-size: 1.5rem;
     font-weight: 700;
     color: #FFFFFF;
     cursor: pointer;
-    background-color: #333333;
+    background-color: #000000;
     transition: opacity 0.3s;
 }
 

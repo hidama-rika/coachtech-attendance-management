@@ -66,6 +66,8 @@ html {
 /* ログアウトとマイページのスタイルを統合し、リンクのような見た目にする */
 .logout-button,
 .menu-button {
+    font-family: 'Inter', 'sans-serif';
+    font-weight: 700;
     width: 140px;
     /* 幅をテキストに合わせる */
     height: 44px;
@@ -85,7 +87,7 @@ html {
 
 .nav-text {
     color: #FFFFFF;
-    font-size: 20px;
+    font-size: 1.25rem;
     display: block;
     margin: auto 0;
     white-space: nowrap;
@@ -93,7 +95,8 @@ html {
 
 body {
     margin: 0;
-    font-family: sans-serif;
+    font-family: 'Inter', 'sans-serif';
+    font-weight: 700;
     /* ❗ 追加/修正: bodyの最小幅を保証し、横スクロールを発生させる */
     width: 100%;
     height: auto;
@@ -138,22 +141,14 @@ body {
 }
 
 .page-title {
-    font-size: 24px;
-    font-weight: bold;
+    font-family: 'Inter', 'sans-serif';
+    font-size: 2rem;
+    font-weight: 700;
     border-left: 8px solid #000000;
     padding-left: 15px;
     margin-bottom: 40px;
     /* 幅を100%にして左端に固定 */
     width: 100%;
-    text-align: left;
-}
-
-.page-title {
-    font-size: 24px;
-    font-weight: bold;
-    border-left: 8px solid #000000;
-    padding-left: 15px;
-    margin-bottom: 40px;
     text-align: left;
 }
 
@@ -165,62 +160,61 @@ body {
     padding: 20px 0;
     border-bottom: 1px solid #EEEEEE;
     height: 100px;
+    width: 100%;
 }
 
 .form-label {
-    width: 200px;
+    width: 250px;
     /* ラベルの幅を固定 */
-    font-weight: bold;
+    font-family: 'Inter', 'sans-serif';
+    font-weight: 700;
     color: #737373;
     text-align: left;
-    margin-left: 100px;
+    padding-left: 40px;
+    flex-shrink: 0;
 }
 
-.form-text {
-    font-weight: bold;
-    font-size: 16px;
+/* --- 黒太字の値部分（名前、日付、時間など）の共通修正 --- */
+.form-text,
+.form-row-date,
+.form-row-text,
+.form-text-remark {
+    /* ❗ margin-leftを統一して、全ての黒文字の開始位置を揃える */
+    margin-left: 130px;
+    font-family: 'Inter', 'sans-serif';
+    font-weight: 700;
+    font-size: 1rem;
+    color: #000000;
     flex: 1;
-    text-align: left;
-    margin-left: 35px;
-    /* ❗ 追加: 姓名の間隔を広げる設定 */
-    display: flex;
-    gap: 20px;
-}
-
-.form-row-date {
-    display: flex;
-    justify-content: flex-start;
-    margin-left: 35px;
-    gap: 85px;
-    font-weight: bold;
-    font-size: 16px;
-}
-
-/* 既存の .input-field や .textarea-field のスタイルを、テキスト用のものに置き換えます */
-
-.form-row-text {
     display: flex;
     align-items: center;
+}
+
+/* 姓名の間隔 */
+.name-display {
     gap: 40px;
-    /* 数値はFigmaに合わせて調整してください */
-    margin-left: 35px;
-    font-weight: bold;
-    font-size: 16px;
+}
+
+/* 年月日の間隔 */
+.form-row-date {
+    gap: 80px;
+}
+
+/* 時間（～）の間隔 */
+.form-row-text {
+    gap: 40px;
+}
+
+.form-text-remark {
+    gap: 40px;
 }
 
 .text-value {
     /* 枠線をなくし、背景も透明に */
     border: none;
     background: transparent;
-    font-weight: bold;
-}
-
-.form-text-remark {
-    margin-left: 35px;
-    font-weight: bold;
-    font-size: 16px;
-    flex: 1;
-    text-align: left;
+    font-family: 'Inter', 'sans-serif';
+    font-weight: 700;
 }
 
 .range-separator {
@@ -238,12 +232,12 @@ body {
 .submit-button {
     background-color: #000000;
     color: #FFFFFF;
-    width: 150px;
-    height: 45px;
+    width: 130px;
+    height: 50px;
     border: none;
     border-radius: 4px;
-    font-weight: bold;
-    font-size: 18px;
+    font-weight: 700;
+    font-size: 1.375rem;
     cursor: pointer;
     /* ❗ 文字の中央配置 */
     display: flex;
@@ -256,11 +250,11 @@ body {
     background-color: #696969;
     color: #FFFFFF;
     width: 200px;
-    height: 45px;
+    height: 50px;
     border: none;
     border-radius: 4px;
     font-weight: bold;
-    font-size: 18px;
+    font-size: 1.375rem;
     cursor: pointer;
     /* ❗ 文字の中央配置 */
     display: flex;
@@ -287,7 +281,7 @@ body {
 /* 2. 1400px付近の画面対応 (要件 DG02 に合わせる) */
 @media screen and (max-width: 1540px) {
 
-    .container,
+    .form-container,
     .header-content {
         width: 95%;
         /* 画面端の余白 */
@@ -306,14 +300,6 @@ body {
         margin-left: 20px;
         /* 大きすぎるマージンを削減 */
         width: 150px;
-    }
-
-    .form-text,
-    .form-row-date,
-    .form-row-text,
-    .form-text-remark {
-        margin-left: 20px;
-        /* ラベルとの間隔を一定にする */
     }
 }
 
