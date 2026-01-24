@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\AdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,7 +20,7 @@ use App\Http\Controllers\AttendanceController;
 
 // 開発用表示ルート 一般ユーザー
 Route::view('/register', 'auth.register');
-Route::view('/login', 'auth.login');
+// Route::view('/login', 'auth.login')->name('login');
 Route::view('/verify', 'auth.verify-email');
 
 // attendanceディレクトリ内のファイルを参照
@@ -31,7 +32,7 @@ Route::view('/verify', 'auth.verify-email');
 // Route::view('/stamp_correction_request/list', 'request.list'); // 修正申請一覧
 
 // 開発用表示ルート 管理者 (adminディレクトリ内を参照)
-Route::view('/admin/login', 'admin.login');
+// Route::view('/admin/login', 'admin.login');
 Route::view('/admin/attendance/list', 'admin.attendance.list');
 Route::view('/admin/attendance/{id}', 'admin.attendance.detail');
 Route::view('/admin/staff/list', 'admin.staff.list');
@@ -53,8 +54,20 @@ Route::view('/admin/stamp_correction_request/approve/{attendance_correct_request
 // });
 
 
+// --- 認証画面の定義 (Authenticate.phpのリダイレクト先として必要) ---
 
-// ログイン済みユーザーのみアクセス可能（一般・管理者共通）
+// 一般ユーザー用ログイン画面
+Route::get('/login', function () {
+    return view('auth.login');
+})->name('login');
+
+// 管理者用ログイン画面
+Route::get('/admin/login', function () {
+    return view('admin.login');
+})->name('admin.login');
+
+
+// --- ログイン済みユーザーのみアクセス可能（一般・管理者共通） ---
 Route::middleware(['auth'])->group(function () {
 
     // --- スタッフ用：勤怠管理 ---
@@ -98,6 +111,6 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/stamp_correction_request/approve/{attendance_correct_request_id}', [AdminController::class, 'approveRequest'])->name('admin.request.approve');
 
         // 申請詳細の確認画面 (FN050)
-        // 必要に応じて一般側の詳細画面を流用するか、管理者専用画面のGETルートを追加します
+        Route::get('/stamp_correction_request/approve/{attendance_correct_request_id}', [AdminController::class, 'showApproveDetail'])->name('admin.request.show');
     });
 });
