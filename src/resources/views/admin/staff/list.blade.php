@@ -61,20 +61,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {{-- 以下、ダミーデータ（ループで出力する想定） --}}
+                        @foreach($users as $user)
                         <tr>
-                            <td class="text-center">山田 太郎</td>
-                            <td class="text-center">taro.y@coachtech.com</td>
-                            <td class="text-center"><a href="/admin/attendance/1" class="detail-link">詳細</a></td>
-                        </tr>
-                        {{-- 繰り返し分... --}}
-                        @foreach(range(1, 5) as $i)
-                        <tr>
-                            <td class="text-center">スタッフ名</td>
-                            <td class="text-center">staff@coachtech.com</td>
-                            <td class="text-center"><a href="#" class="detail-link">詳細</a></td>
+                            <td class="text-center">{{ $user->name }}</td>
+                            <td class="text-center">{{ $user->email }}</td>
+                            <td class="text-center">
+                                {{-- ❗ ここで各スタッフの月次勤怠詳細へリンク --}}
+                                <a href="{{ route('admin.staff.attendance', ['id' => $user->id]) }}" class="detail-link">詳細</a>
+                            </td>
                         </tr>
                         @endforeach
+
                     </tbody>
                 </table>
             </div>

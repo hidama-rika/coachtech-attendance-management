@@ -50,4 +50,13 @@ class User extends Authenticatable
         // 1人のユーザーは、日々の勤怠データをたくさん（HasMany）持っています
         return $this->hasMany(Attendance::class);
     }
+
+    /**
+     * ユーザーが行った修正申請の一覧を取得
+     */
+    public function attendanceCorrectRequests()
+    {
+        // 1人のユーザーは複数の修正申請（HasMany）を持つことができます
+        return $this->hasMany(AttendanceCorrectRequest::class);
+    }
 }

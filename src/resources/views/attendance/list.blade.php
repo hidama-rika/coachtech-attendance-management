@@ -52,14 +52,15 @@
 
             {{-- 月選択バー --}}
             <div class="date-pager">
-                <a href="#" class="date-pager-btn">
+                <a href="/attendance/list?month={{ $prevMonth }}" class="date-pager-btn">
                     <img src="{{ asset('storage/img/arrow.png') }}" alt="矢印マーク" class="arrowleft-icon"> 前月
                 </a>
                 <div class="date-display">
                     <img src="{{ asset('storage/img/calendarmark.png') }}" alt="カレンダーマーク" class="calendar-icon">
-                    <span class="current-date">2023/06</span>
+                    {{-- $displayDate に '2023/06' という形式で渡す想定 --}}
+                    <span class="current-date">{{ $displayDate }}</span>
                 </div>
-                <a href="#" class="date-pager-btn">翌月 
+                <a href="/attendance/list?month={{ $nextMonth }}" class="date-pager-btn">翌月 
                     <img src="{{ asset('storage/img/arrow.png') }}" alt="矢印マーク" class="arrowright-icon">
                 </a>
             </div>
@@ -78,26 +79,24 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {{-- 以下、ダミーデータ（ループで出力する想定） --}}
+                        @foreach($attendances as $attendance)
                         <tr>
-                            <td class="text-center">06/01(木)</td>
-                            <td class="text-center">09:00</td>
-                            <td class="text-center">18:00</td>
-                            <td class="text-center">1:00</td>
-                            <td class="text-center">8:00</td>
-                            <td class="text-center"><a href="/attendance/detail/{id}" class="detail-link">詳細</a></td>
-                        </tr>
-                        {{-- 繰り返し分... --}}
-                        @foreach(range(1, 5) as $i)
-                        <tr>
-                            <td class="text-center">日付</td>
-                            <td class="text-center">09:00</td>
-                            <td class="text-center">18:00</td>
-                            <td class="text-center">1:00</td>
-                            <td class="text-center">8:00</td>
-                            <td class="text-center"><a href="/attendance/detail/{id}" class="detail-link">詳細</a></td>
+                            {{-- 日付のフォーマットもCarbonで行う --}}
+                            <td>{{ Carbon::parse($attendance->date)->format('m/d') }}</td>
+                            <td>{{ Carbon::parse($attendance->check_in)->format('H:i') }}</td>
+                            <td>{{ $attendance->check_out ? Carbon::parse($attendance->check_out)->format('H:i') : '-' }}</td>
+
+                            {{-- ❗ モデルで定義したアクセサを呼び出す --}}
+                            <td class="text-center">{{ $attendance->total_rest_time }}</td>
+                            <td class="text-center">{{ $attendance->total_working_time }}</td>
+
+                            {{-- 詳細リンクにはIDを忘れずに --}}
+                            <td class="text-center">
+                                <a href="/attendance/detail/{{ $attendance->id }}" class="detail-link">詳細</a>
+                            </td>
                         </tr>
                         @endforeach
+
                     </tbody>
                 </table>
             </div>

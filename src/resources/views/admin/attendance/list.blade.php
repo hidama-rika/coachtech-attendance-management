@@ -48,18 +48,24 @@
 
     <main class="list-container">
         <div class="list-form-container">
-            <h1 class="page-title">2023年6月1日の勤怠</h1>
+            {{-- 1. タイトルを動的に変更（例：2023年06月01日の勤怠） --}}
+            <h1 class="page-title">{{ Carbon::parse($displayDate)->isoFormat('YYYY年MM月DD日') }}の勤怠</h1>
 
             {{-- 日付選択バー --}}
             <div class="date-pager">
-                <a href="#" class="date-pager-btn">
+                {{-- 2. 前日へのリンク --}}
+                <a href="{{ route('admin.attendance.list', ['date' => $prevDate]) }}" class="date-pager-btn">
                     <img src="{{ asset('storage/img/arrow.png') }}" alt="矢印マーク" class="arrowleft-icon"> 前日
                 </a>
+
                 <div class="date-display">
                     <img src="{{ asset('storage/img/calendarmark.png') }}" alt="カレンダーマーク" class="calendar-icon">
-                    <span class="current-date">2023/06/01</span>
+                    {{-- 3. 中央の表示（例：2023/06/01） --}}
+                    <span class="current-date">{{ $displayDate }}</span>
                 </div>
-                <a href="#" class="date-pager-btn">翌日 
+
+                {{-- 4. 翌日へのリンク --}}
+                <a href="{{ route('admin.attendance.list', ['date' => $nextDate]) }}" class="date-pager-btn">翌日 
                     <img src="{{ asset('storage/img/arrow.png') }}" alt="矢印マーク" class="arrowright-icon">
                 </a>
             </div>
@@ -78,26 +84,23 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {{-- 以下、ダミーデータ（ループで出力する想定） --}}
+                        @foreach($attendances as $attendance)
                         <tr>
-                            <td class="text-center">山田 太郎</td>
-                            <td class="text-center">09:00</td>
-                            <td class="text-center">18:00</td>
-                            <td class="text-center">1:00</td>
-                            <td class="text-center">8:00</td>
-                            <td class="text-center"><a href="/admin/attendance/1" class="detail-link">詳細</a></td>
-                        </tr>
-                        {{-- 繰り返し分... --}}
-                        @foreach(range(1, 5) as $i)
-                        <tr>
-                            <td class="text-center">スタッフ名</td>
-                            <td class="text-center">09:00</td>
-                            <td class="text-center">18:00</td>
-                            <td class="text-center">1:00</td>
-                            <td class="text-center">8:00</td>
-                            <td class="text-center"><a href="#" class="detail-link">詳細</a></td>
+                            {{-- $attendance->user でUserモデルのデータにアクセス --}}
+                            <td>{{ $attendance->user->name }}</td>
+                            <td>{{ Carbon::parse($attendance->check_in)->format('H:i') }}</td>
+                            <td>{{ $attendance->check_out ? Carbon::parse($attendance->check_out)->format('H:i') : '-' }}</td>
+
+                            {{-- Attendanceモデルで作ったアクセサがここでも使えます --}}
+                            <td>{{ $attendance->total_rest_time }}</td>
+                            <td>{{ $attendance->total_working_time }}</td>
+
+                            <td>
+                                <a href="{{ route('attendance.detail', ['id' => $attendance->id]) }}">詳細</a>
+                            </td>
                         </tr>
                         @endforeach
+
                     </tbody>
                 </table>
             </div>
