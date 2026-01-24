@@ -12,12 +12,16 @@ class LoginResponse implements LoginResponseContract
         // ログイン中のユーザーを取得
         $user = Auth::user();
 
-        // ロール（役職）を判定
-        // 1: 管理者, 0: 一般ユーザー
-        if ($user->role === 1) {
-            return redirect()->intended('/admin/attendance/list'); // 管理者用画面
+        // 管理者画面(/admin/login)からログインしたが一般スタッフだった場合
+        if ($request->is('admin/login') && $user->role === 0) {
+            Auth::logout();
+            return redirect('/login')->with('error', 'スタッフの方は、こちらから再度ログインしてください。');
         }
 
-        return redirect()->intended('/attendance'); // 一般ユーザー用画面
+        // 正常なリダイレクト先 (US004, US005)
+        // 管理者(role:1)なら管理者一覧へ、スタッフ(role:0)なら打刻画面へ
+        $redirect = ($user->role === 1) ? '/admin/attendance/list' : '/attendance';
+
+        return redirect()->intended($redirect);
     }
 }

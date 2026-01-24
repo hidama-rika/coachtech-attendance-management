@@ -78,7 +78,8 @@ Route::middleware(['auth'])->group(function () {
 
 
     // 管理者専用ルートのグループ（後ほど role で判定）
-    Route::prefix('admin')->group(function () {
+    // ❗ middleware に 'admin' を追加することで、一般ユーザーをブロック
+    Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
         // 全スタッフの当日勤怠一覧 (FN034, FN035)
         Route::get('/attendance/list', [AdminController::class, 'dailyAttendance'])->name('admin.attendance.list');
