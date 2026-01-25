@@ -76,6 +76,16 @@ view ファイルの作成
 
     ・　php artisan make:seeder
 
+        管理者ログイン情報:
+            URL: /admin/login
+            Email: admin@example.com
+            Password: password123
+
+        一般スタッフログイン情報:
+            URL: /login
+            Email: staff@example.com
+            Password: password123
+
     ・　作成したシーダーファイルをDatabaseSeeder.phpに登録
 
     ・　php artisan db:seed
