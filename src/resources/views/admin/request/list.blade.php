@@ -30,7 +30,7 @@
                     <span class="nav-text">スタッフ一覧</span>
                 </a>
 
-                <a href="/admin/stamp_correction_request/list" class="nav-button menu-button">
+                <a href="{{ route('request.list') }}" class="nav-button menu-button">
                     <span class="nav-text">申請一覧</span>
                 </a>
 

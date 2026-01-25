@@ -87,8 +87,16 @@ Route::middleware(['auth'])->group(function () {
     // 修正申請の保存処理 (FN030)
     Route::post('/attendance/detail/{id}', [RequestController::class, 'store'])->name('attendance.update');
 
-    // 自分の申請一覧画面を表示 (FN031, FN032)
-    Route::get('/stamp_correction_request/list', [RequestController::class, 'index'])->name('request.list');
+    // スタッフの申請一覧画面を表示 (FN031, FN032)
+    // 管理者の修正申請一覧の表示 (FN047, FN048)
+    // --- 【重要】申請一覧画面 (PG06/PG12 共通パス) ---
+    // 一般ユーザーと管理者で同じURLを使用し、roleで呼び出すコントローラーを切り替える
+    Route::get('/stamp_correction_request/list', function () {
+        if (auth()->user() && auth()->user()->role === 1) { // 1: 管理者
+            return app(RequestController::class)->adminIndex();
+        }
+        return app(RequestController::class)->index(); // 一般ユーザー
+    })->name('request.list');
 
 
     // 管理者専用ルートのグループ（後ほど role で判定）
@@ -109,9 +117,6 @@ Route::middleware(['auth'])->group(function () {
 
         // 特定スタッフの月次勤怠を表示 (FN043, FN044)
         Route::get('/attendance/staff/{id}', [AdminController::class, 'staffMonthlyAttendance'])->name('admin.staff.attendance');
-
-        // 修正申請一覧の表示 (FN047, FN048)
-        Route::get('/stamp_correction_request/list', [RequestController::class, 'adminIndex'])->name('admin.request.list');
 
         // 申請詳細の確認画面 (FN050)
         Route::get('/stamp_correction_request/approve/{attendance_correct_request_id}', [RequestController::class, 'adminShow'])->name('admin.request.show');
