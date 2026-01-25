@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Attendance;
 use App\Models\AttendanceCorrectRequest; // 申請モデル
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB; // トランザクション用
 
 class AdminController extends Controller
 {
@@ -29,6 +30,68 @@ class AdminController extends Controller
             'prevDate' => $currentDate->copy()->subDay()->toDateString(),
             'nextDate' => $currentDate->copy()->addDay()->toDateString(),
         ]);
+    }
+
+    /**
+     * 【FN037, FN038】管理者用：勤怠詳細画面の表示
+     */
+    public function showDetail($id)
+    {
+        // 指定された勤怠データを取得（休憩データも含む）
+        $attendance = Attendance::with(['user', 'rests'])->findOrFail($id);
+
+        return view('admin.attendance.detail', compact('attendance'));
+    }
+
+    /**
+     * 【FN039, FN040】管理者用：勤怠情報の直接修正
+     */
+    public function update(Request $request, $id)
+    {
+        // 1. バリデーション
+        $request->validate([
+            'check_in'  => 'required',
+            'check_out' => 'required|after:check_in',
+            'remark'    => 'required',
+        ], [
+            'check_out.after' => '出勤時間もしくは退勤時間が不適切な値です', // FN039
+            'remark.required' => '備考を記入してください', // FN039
+        ]);
+
+        DB::transaction(function () use ($request, $id) {
+            $attendance = Attendance::findOrFail($id);
+
+            // 2. 勤怠本体の更新 (FN040)
+            $attendance->update([
+                'check_in'  => $request->check_in,
+                'check_out' => $request->check_out,
+                // 備考を保存するカラム（例: remark）がある場合
+                'remark'    => $request->remark,
+            ]);
+
+            // 3. 既存の休憩データの更新
+            if ($request->has('rests')) {
+                foreach ($request->rests as $restId => $times) {
+                    // 開始・終了の両方が入力されている場合のみ更新
+                    if ($times['start'] && $times['end']) {
+                        \App\Models\Rest::where('id', $restId)->update([
+                            'start_time' => $times['start'],
+                            'end_time'   => $times['end'],
+                        ]);
+                    }
+                }
+            }
+
+            // 4. 新規休憩枠の保存（入力がある場合のみ）
+            if ($request->filled('new_rest.start') && $request->filled('new_rest.end')) {
+                $attendance->rests()->create([
+                    'start_time' => $request->input('new_rest.start'),
+                    'end_time'   => $request->input('new_rest.end'),
+                ]);
+            }
+        });
+
+        return redirect()->route('admin.attendance.list')->with('message', '勤怠情報を修正しました');
     }
 
     /**
@@ -64,40 +127,5 @@ class AdminController extends Controller
             'prevMonth' => $currentDate->copy()->subMonth()->format('Y-m'),
             'nextMonth' => $currentDate->copy()->addMonth()->format('Y-m'),
         ]);
-    }
-
-    /**
-     * 【FN047, FN048, FN049】修正申請一覧（承認待ち・承認済み）
-     * 全スタッフの申請をステータス別に表示
-     */
-    public function requestList()
-    {
-        $pendingRequests = AttendanceCorrectRequest::with(['user', 'attendance'])
-            ->where('status', 'pending')->get();
-        $approvedRequests = AttendanceCorrectRequest::with(['user', 'attendance'])
-            ->where('status', 'approved')->get();
-
-        return view('admin.request.list', compact('pendingRequests', 'approvedRequests'));
-    }
-
-    /**
-     * 【FN050, FN051】申請詳細の確認と承認処理
-     * 承認により勤怠情報と申請ステータスを更新
-     */
-    public function approveRequest($requestId)
-    {
-        $request = AttendanceCorrectRequest::findOrFail($requestId);
-
-        // 勤怠本体の更新（申請された内容を反映）
-        $attendance = $request->attendance;
-        $attendance->update([
-            'check_in' => $request->correctionAttendanceDetail->check_in,
-            'check_out' => $request->correctionAttendanceDetail->check_out,
-        ]);
-
-        // 申請ステータスを"承認済み"に変更
-        $request->update(['status' => 'approved']);
-
-        return redirect()->route('admin.request.list')->with('message', '承認しました');
     }
 }
