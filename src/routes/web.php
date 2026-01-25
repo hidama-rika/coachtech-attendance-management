@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\RequestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,14 +34,14 @@ Route::view('/verify', 'auth.verify-email');
 
 // 開発用表示ルート 管理者 (adminディレクトリ内を参照)
 // Route::view('/admin/login', 'admin.login');
-Route::view('/admin/attendance/list', 'admin.attendance.list');
+// Route::view('/admin/attendance/list', 'admin.attendance.list');
 Route::view('/admin/attendance/{id}', 'admin.attendance.detail');
-Route::view('/admin/staff/list', 'admin.staff.list');
-Route::view('/admin/attendance/staff/{id}', 'admin.staff.attendance_list');
+// Route::view('/admin/staff/list', 'admin.staff.list');
+// Route::view('/admin/attendance/staff/{id}', 'admin.staff.attendance_list');
 
 // 管理者用の修正申請 (admin/requestディレクトリ内)
-Route::view('/admin/stamp_correction_request/list', 'admin.request.list');
-Route::view('/admin/stamp_correction_request/approve/{attendance_correct_request_id}', 'admin.request.approve');
+// Route::view('/admin/stamp_correction_request/list', 'admin.request.list');
+// Route::view('/admin/stamp_correction_request/approve/{attendance_correct_request_id}', 'admin.request.approve');
 
 
 // 一般ユーザーと管理者で同じURLを使用する場合
@@ -84,10 +85,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/attendance/detail/{id}', [AttendanceController::class, 'showDetail'])->name('attendance.detail');
 
     // 修正申請の保存処理 (FN030)
-    Route::post('/attendance/detail/{id}', [AttendanceController::class, 'updateRequest'])->name('attendance.update');
+    Route::post('/attendance/detail/{id}', [RequestController::class, 'store'])->name('attendance.update');
 
     // 自分の申請一覧画面を表示 (FN031, FN032)
-    Route::get('/stamp_correction_request/list', [AttendanceController::class, 'requestList'])->name('request.list');
+    Route::get('/stamp_correction_request/list', [RequestController::class, 'index'])->name('request.list');
 
 
     // 管理者専用ルートのグループ（後ほど role で判定）
@@ -104,13 +105,13 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/attendance/staff/{id}', [AdminController::class, 'staffAttendance'])->name('admin.staff.attendance');
 
         // 修正申請一覧の表示 (FN047, FN048)
-        Route::get('/stamp_correction_request/list', [AdminController::class, 'requestList'])->name('admin.request.list');
+        Route::get('/stamp_correction_request/list', [RequestController::class, 'adminIndex'])->name('admin.request.list');
+
+        // 申請詳細の確認画面 (FN050)
+        Route::get('/stamp_correction_request/approve/{attendance_correct_request_id}', [RequestController::class, 'adminShow'])->name('admin.request.show');
 
         // 修正申請の承認処理 (FN051)
         // ※詳細画面から「承認」ボタンを押した際の保存アクション
-        Route::post('/stamp_correction_request/approve/{attendance_correct_request_id}', [AdminController::class, 'approveRequest'])->name('admin.request.approve');
-
-        // 申請詳細の確認画面 (FN050)
-        Route::get('/stamp_correction_request/approve/{attendance_correct_request_id}', [AdminController::class, 'showApproveDetail'])->name('admin.request.show');
+        Route::post('/stamp_correction_request/approve/{attendance_correct_request_id}', [RequestController::class, 'approve'])->name('admin.request.approve');
     });
 });
