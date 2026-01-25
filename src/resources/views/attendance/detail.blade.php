@@ -51,10 +51,10 @@
             <h1 class="page-title">勤怠詳細</h1>
 
             {{-- 勤怠詳細テーブル --}}
-            <form action="{{ route('admin.attendance.update', ['id' => $attendance->id]) }}" method="POST" class="attendance-form">
+            <form action="{{ route('attendance.update', ['id' => $attendance->id]) }}" method="POST" class="attendance-form">
                 @csrf
 
-                {{-- バリデーションエラーの表示エリアを追加 (FN039) --}}
+                {{-- バリデーションエラーの表示エリアを追加 (FN030) --}}
                 @if ($errors->any())
                     <div class="error-messages">
                         @foreach ($errors->all() as $error)
@@ -131,7 +131,7 @@
                     <textarea name="remark" class="textarea-field">{{ old('remark') }}</textarea>
                 </div>
 
-                {{-- 修正ボタン (FN040) --}}
+                {{-- 修正ボタン (FN028: 修正申請を出す) --}}
                 <div class="form-button-area">
                     <button type="submit" class="submit-button">修正</button>
                 </div>

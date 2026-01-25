@@ -51,47 +51,59 @@
             <h1 class="page-title">勤怠詳細</h1>
 
             {{-- 勤怠詳細テーブル --}}
-            <form action="#" method="POST" class="attendance-form">
+            <form action="{{ route('admin.attendance.update', ['id' => $attendance->id]) }}" method="POST" class="attendance-form">
                 @csrf
-                {{-- 名前 --}}
+
+                {{-- バリデーションエラーの表示 (FN039) --}}
+                @if ($errors->any())
+                    <div class="error-messages">
+                        @foreach ($errors->all() as $error)
+                            <p class="error-text">※ {{ $error }}</p>
+                        @endforeach
+                    </div>
+                @endif
+
+                {{-- 名前：動的表示 --}}
                 <div class="form-group">
                     <label class="form-label">名前</label>
                     <div class="form-text name-display">
-                        <span>西</span>
-                        <span>伶奈</span>
+                        <span>{{ $attendance->user->name }}</span>
                     </div>
                 </div>
 
-                {{-- 日付 --}}
+                {{-- 日付：動的表示 --}}
                 <div class="form-group">
                     <label class="form-label">日付</label>
                     <div class="form-row-date">
-                        <span class="date-unit">2023年</span>
-                        <span class="date-unit">6月1日</span>
+                        <span class="date-unit">{{ \Carbon\Carbon::parse($attendance->date)->format('Y年') }}</span>
+                        <span class="date-unit">{{ \Carbon\Carbon::parse($attendance->date)->format('n月j日') }}</span>
                     </div>
                 </div>
 
-                {{-- 出勤・退勤 --}}
+                {{-- 出勤・退勤：name属性を追加 --}}
                 <div class="form-group">
                     <label class="form-label">出勤・退勤</label>
                     <div class="form-row-input">
-                        <input type="text" class="input-field" value="09:00">
+                        <input type="text" name="check_in" class="input-field" value="{{ old('check_in', substr($attendance->check_in, 0, 5)) }}">
                         <span class="range-separator">～</span>
-                        <input type="text" class="input-field" value="20:00">
+                        <input type="text" name="check_out" class="input-field" value="{{ old('check_out', substr($attendance->check_out, 0, 5)) }}">
                     </div>
                 </div>
 
-                {{-- 休憩 --}}
+                {{-- 休憩：保存済みデータのループ --}}
+                @foreach($attendance->rests as $index => $rest)
                 <div class="form-group">
-                    <label class="form-label">休憩</label>
+                    <label class="form-label">休憩{{ $index + 1 }}</label>
                     <div class="form-row-input">
-                        <input type="text" class="input-field" value="12:00">
+                        <input type="text" name="rests[{{ $rest->id }}][start]" class="input-field" value="{{ old("rests.{$rest->id}.start", substr($rest->start_time, 0, 5)) }}">
                         <span class="range-separator">～</span>
-                        <input type="text" class="input-field" value="13:00">
+                        <input type="text" name="rests[{{ $rest->id }}][end]" class="input-field" value="{{ old("rests.{$rest->id}.end", substr($rest->end_time, 0, 5)) }}">
                     </div>
                 </div>
+                @endforeach
 
                 {{-- 休憩2（追加用） --}}
+                {{-- 【A案】Figmaデザイン通りの固定枠（回答次第で削除） --}}
                 <div class="form-group">
                     <label class="form-label">休憩2</label>
                     <div class="form-row-input">
@@ -101,13 +113,23 @@
                     </div>
                 </div>
 
-                {{-- 備考 --}}
+                {{-- 【B案】動的に増える新規枠（コーチ確認用） --}}
                 <div class="form-group">
-                    <label class="form-label">備考</label>
-                    <textarea class="textarea-field"></textarea>
+                    <label class="form-label">休憩{{ $attendance->rests->count() + 1 }}</label>
+                    <div class="form-row-input">
+                        <input type="text" name="new_rest[start]" class="input-field" value="{{ old('new_rest.start') }}">
+                        <span class="range-separator">～</span>
+                        <input type="text" name="new_rest[end]" class="input-field" value="{{ old('new_rest.end') }}">
+                    </div>
                 </div>
 
-                {{-- 修正ボタン --}}
+                {{-- 備考：name属性を追加 --}}
+                <div class="form-group">
+                    <label class="form-label">備考</label>
+                    <textarea name="remark" class="textarea-field">{{ old('remark', $attendance->remark) }}</textarea>
+                </div>
+
+                {{-- 修正ボタン (FN040: 勤怠更新処理)--}}
                 <div class="form-button-area">
                     <button type="submit" class="submit-button">修正</button>
                 </div>
