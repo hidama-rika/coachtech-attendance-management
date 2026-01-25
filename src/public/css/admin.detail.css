@@ -270,6 +270,33 @@ body {
     align-items: center;
 }
 
+/* --- エラーメッセージ表示エリア (FN039) --- */
+.error-messages {
+    background-color: #fce4e4;
+    /* 薄い赤の背景 */
+    border: 1px solid #f5c6cb;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 30px;
+    text-align: left;
+    /* 左寄せで読みやすく */
+}
+
+.error-text {
+    color: #cc0000;
+    /* 濃い赤色 */
+    font-size: 0.875rem;
+    font-weight: 700;
+    margin: 5px 0;
+}
+
+/* 入力エラーがあるフィールドを目立たせる（オプション） */
+.input-field.is-invalid,
+.textarea-field.is-invalid {
+    border: 2px solid #cc0000;
+    background-color: #fffafa;
+}
+
 /* ---------------------------------------------------------------------- */
 /* レスポンシブ対応のためのメディアクエリ (画面設計のデザイン要件 DG02 に合わせる)*/
 /* ---------------------------------------------------------------------- */

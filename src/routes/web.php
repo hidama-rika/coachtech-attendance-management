@@ -35,7 +35,7 @@ Route::view('/verify', 'auth.verify-email');
 // 開発用表示ルート 管理者 (adminディレクトリ内を参照)
 // Route::view('/admin/login', 'admin.login');
 // Route::view('/admin/attendance/list', 'admin.attendance.list');
-Route::view('/admin/attendance/{id}', 'admin.attendance.detail');
+// Route::view('/admin/attendance/{id}', 'admin.attendance.detail');
 // Route::view('/admin/staff/list', 'admin.staff.list');
 // Route::view('/admin/attendance/staff/{id}', 'admin.staff.attendance_list');
 
@@ -98,11 +98,17 @@ Route::middleware(['auth'])->group(function () {
         // 全スタッフの当日勤怠一覧 (FN034, FN035)
         Route::get('/attendance/list', [AdminController::class, 'dailyAttendance'])->name('admin.attendance.list');
 
+        // 特定勤怠の詳細表示 (FN037, FN038)
+        Route::get('/attendance/{id}', [AdminController::class, 'showDetail'])->name('admin.attendance.detail');
+
+        // 勤怠情報の直接修正処理 (FN040)
+        Route::post('/attendance/{id}', [AdminController::class, 'update'])->name('admin.attendance.update');
+
         // 全スタッフ一覧を表示 (FN041, FN042)
         Route::get('/staff/list', [AdminController::class, 'staffList'])->name('admin.staff.list');
 
         // 特定スタッフの月次勤怠を表示 (FN043, FN044)
-        Route::get('/attendance/staff/{id}', [AdminController::class, 'staffAttendance'])->name('admin.staff.attendance');
+        Route::get('/attendance/staff/{id}', [AdminController::class, 'staffMonthlyAttendance'])->name('admin.staff.attendance');
 
         // 修正申請一覧の表示 (FN047, FN048)
         Route::get('/stamp_correction_request/list', [RequestController::class, 'adminIndex'])->name('admin.request.list');
