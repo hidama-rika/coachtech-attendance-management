@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-namespace App\Http\Requests;
 
 use Illuminate\Http\Request;
 use App\Models\Attendance;
@@ -36,7 +35,7 @@ class RequestController extends Controller
      */
     public function store(Request $request, $id)
     {
-        // バリデーション（以前作成したFormRequestを使用してもOK）
+        // // 1. バリデーション (FN028, FN029)（以前作成したFormRequestを使用してもOK）
         $request->validate([
             'check_in' => 'required',
             'check_out' => 'required|after:check_in',
@@ -49,19 +48,42 @@ class RequestController extends Controller
         DB::transaction(function () use ($request, $id) {
             $user = Auth::user();
 
-            // 修正申請レコードの作成
+            // 2. 修正申請本体の作成
             $correctRequest = AttendanceCorrectRequest::create([
                 'user_id' => $user->id,
                 'attendance_id' => $id,
                 'status' => 'pending',
             ]);
 
-            // 詳細データの保存
+            // 3. ★【重要】勤怠詳細（出退勤・備考）の保存を追加
             $correctRequest->correctionAttendanceDetail()->create([
                 'check_in' => $request->check_in,
                 'check_out' => $request->check_out,
                 'remark' => $request->remark,
             ]);
+
+            // 4. ★既存の休憩データの修正分をループで保存
+            if ($request->has('rests')) {
+                foreach ($request->rests as $restId => $times) {
+                    if ($times['start'] && $times['end']) {
+                        // restDetails() リレーションを使って保存
+                        $correctRequest->restDetails()->create([
+                            'rest_id' => $restId,
+                            'start_time' => $times['start'],
+                            'end_time' => $times['end'],
+                        ]);
+                    }
+                }
+            }
+
+            // 5. ★新規休憩データ（B案分）の保存
+            if ($request->filled('new_rest.start') && $request->filled('new_rest.end')) {
+                $correctRequest->restDetails()->create([
+                    'start_time' => $request->new_rest['start'],
+                    'end_time' => $request->new_rest['end'],
+                    // rest_id は指定しない（新規のため）
+                ]);
+            }
         });
 
         return redirect()->route('attendance.list')->with('message', '修正申請を出しました');
@@ -88,7 +110,8 @@ class RequestController extends Controller
     public function adminShow($requestId)
     {
         // 承認待ちの内容を表示
-        $request = AttendanceCorrectRequest::with(['user', 'attendance', 'correctionAttendanceDetail'])
+        // ★修正後の休憩内容（restDetails）も一緒にロードするように追加
+        $request = AttendanceCorrectRequest::with(['user', 'attendance', 'correctionAttendanceDetail', 'restDetails'])
             ->findOrFail($requestId);
 
         return view('admin.request.approve', compact('request'));
@@ -109,7 +132,24 @@ class RequestController extends Controller
                 'check_out' => $request->correctionAttendanceDetail->check_out,
             ]);
 
-            // 2. 申請ステータスを"承認済み"に変更
+            // 2. ★休憩データの更新・追加処理（承認時に実際のrestsテーブルに反映）
+            foreach ($request->restDetails as $detail) {
+                if ($detail->rest_id) {
+                    // 既存休憩の更新
+                    Rest::find($detail->rest_id)->update([
+                        'start_time' => $detail->start_time,
+                        'end_time' => $detail->end_time,
+                    ]);
+                } else {
+                    // 新規休憩の追加
+                    $attendance->rests()->create([
+                        'start_time' => $detail->start_time,
+                        'end_time' => $detail->end_time,
+                    ]);
+                }
+            }
+
+            // 3. 申請ステータスを"承認済み"に変更
             $request->update(['status' => 'approved']);
         });
 

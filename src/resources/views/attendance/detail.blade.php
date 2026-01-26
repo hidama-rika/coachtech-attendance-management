@@ -102,19 +102,7 @@
                 </div>
                 @endforeach
 
-                {{-- 休憩2（追加用） --}}
-                {{-- 【A案】Figmaデザイン通りの固定枠（回答次第で削除） --}}
-                <div class="form-group">
-                    <label class="form-label">休憩2</label>
-                    <div class="form-row-input">
-                        <input type="text" class="input-field" value="">
-                        <span class="range-separator">～</span>
-                        <input type="text" class="input-field" value="">
-                    </div>
-                </div>
-
-                {{-- 2. コーチへの提案通り、常に末尾に1つ「新規入力用」を表示する --}}
-                {{-- 【B案】動的に増える新規枠（採用予定のロジック） --}}
+                {{-- 2. 動的に増える新規枠。常に末尾に1つ「新規入力用」を表示する --}}
                 <div class="form-group">
                     <label class="form-label">休憩{{ $attendance->rests->count() + 1 }}</label>
                     <div class="form-row-input">
