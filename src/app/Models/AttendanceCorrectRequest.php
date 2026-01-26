@@ -28,4 +28,11 @@ class AttendanceCorrectRequest extends Model
     {
         return $this->hasOne(CorrectionAttendanceDetail::class);
     }
+
+    // 修正後の具体的な休憩内容（1対多）
+    // モデル名は適宜作成したもの（例: CorrectionRestDetail）に合わせる
+    public function restDetails()
+    {
+        return $this->hasMany(CorrectionRestDetail::class);
+    }
 }

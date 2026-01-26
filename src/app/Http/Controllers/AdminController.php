@@ -82,11 +82,12 @@ class AdminController extends Controller
                 }
             }
 
-            // 4. 新規休憩枠の保存（入力がある場合のみ）
+            // 4. 新規休憩データの直接保存
+            // new_rest の入力がある場合のみ、新しい休憩レコードを作成する
             if ($request->filled('new_rest.start') && $request->filled('new_rest.end')) {
                 $attendance->rests()->create([
-                    'start_time' => $request->input('new_rest.start'),
-                    'end_time'   => $request->input('new_rest.end'),
+                    'start_time' => $request->new_rest['start'],
+                    'end_time' => $request->new_rest['end'],
                 ]);
             }
         });
