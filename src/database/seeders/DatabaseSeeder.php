@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
         // ❗ 作成したシーダーをここで呼び出す
         $this->call([
             UsersTableSeeder::class,
+            AttendancesTableSeeder::class,
         ]);
     }
 }
