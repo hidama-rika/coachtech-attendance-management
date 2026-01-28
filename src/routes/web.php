@@ -120,6 +120,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // 特定スタッフの月次勤怠を表示 (FN043, FN044)
         Route::get('/attendance/staff/{id}', [AdminController::class, 'staffMonthlyAttendance'])->name('admin.staff.attendance');
 
+        // 特定スタッフの月次勤怠をCSV出力 (FN045)
+        Route::get('/attendance/staff/{id}/export', [AdminController::class, 'exportCsv'])->name('admin.attendance.export');
+
         // 申請詳細の確認画面 (FN050)
         Route::get('/stamp_correction_request/approve/{attendance_correct_request_id}', [RequestController::class, 'adminShow'])->name('admin.request.show');
 

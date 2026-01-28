@@ -48,19 +48,21 @@
 
     <main class="list-container">
         <div class="list-form-container">
-            <h1 class="page-title">西玲奈さんの勤怠</h1>
+            <h1 class="page-title">{{ $user->name }}さんの勤怠</h1>
 
             {{-- 月選択バー --}}
             <div class="date-pager">
-                <a href="#" class="date-pager-btn">
+                {{-- 前月ボタン --}}
+                <a href="{{ route('admin.staff.attendance', ['id' => $user->id, 'month' => $displayDate->copy()->subMonth()->format('Y-m')]) }}" class="date-pager-btn">
                     <img src="{{ asset('storage/img/arrow.png') }}" alt="矢印マーク" class="arrowleft-icon"> 前月
                 </a>
                 <div class="date-display">
                     <img src="{{ asset('storage/img/calendarmark.png') }}" alt="カレンダーマーク" class="calendar-icon">
-                    <span class="current-date">2023/06</span>
+                    <span class="current-date">{{ $displayDate->format('Y/m') }}</span>
                 </div>
-                <a href="#" class="date-pager-btn">翌月 
-                    <img src="{{ asset('storage/img/arrow.png') }}" alt="矢印マーク" class="arrowright-icon">
+                {{-- 翌月ボタン --}}
+                <a href="{{ route('admin.staff.attendance', ['id' => $user->id, 'month' => $displayDate->copy()->addMonth()->format('Y-m')]) }}" class="date-pager-btn">
+                    翌月 <img src="{{ asset('storage/img/arrow.png') }}" alt="矢印マーク" class="arrowright-icon">
                 </a>
             </div>
 
@@ -78,24 +80,20 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {{-- 以下、ダミーデータ（ループで出力する想定） --}}
+                        @foreach($attendances as $attendance)
                         <tr>
-                            <td class="text-center">06/01(木)</td>
-                            <td class="text-center">09:00</td>
-                            <td class="text-center">18:00</td>
-                            <td class="text-center">1:00</td>
-                            <td class="text-center">8:00</td>
-                            <td class="text-center"><a href="/admin/attendance/1" class="detail-link">詳細</a></td>
-                        </tr>
-                        {{-- 繰り返し分... --}}
-                        @foreach(range(1, 5) as $i)
-                        <tr>
-                            <td class="text-center">日付</td>
-                            <td class="text-center">09:00</td>
-                            <td class="text-center">18:00</td>
-                            <td class="text-center">1:00</td>
-                            <td class="text-center">8:00</td>
-                            <td class="text-center"><a href="#" class="detail-link">詳細</a></td>
+                            {{-- 日付と曜日を表示 --}}
+                            <td class="text-center">
+                                {{ \Carbon\Carbon::parse($attendance->date)->format('m/d') }}({{ \Carbon\Carbon::parse($attendance->date)->isoFormat('ddd') }})
+                            </td>
+                            <td>{{ Carbon::parse($attendance->check_in)->format('H:i') }}</td>
+                            <td>{{ $attendance->check_out ? Carbon::parse($attendance->check_out)->format('H:i') : '-' }}</td>
+
+                            {{-- 休憩合計と勤務合計（アクセサを使用） --}}
+                            <td class="text-center">{{ $attendance->total_rest_time }}</td>
+                            <td class="text-center">{{ $attendance->total_working_time }}</td>
+
+                            <td class="text-center"><a href="{{ route('admin.attendance.detail', ['id' => $attendance->id]) }}" class="detail-link">詳細</a></td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -104,7 +102,9 @@
 
             {{-- CSV出力ボタン --}}
             <div class="form-button-area">
-                <button type="submit" class="submit-button">CSV出力</button>
+                <a href="{{ route('admin.attendance.export', ['id' => $user->id, 'month' => $displayDate->format('Y-m')]) }}" class="submit-button">
+                    CSV出力
+                </a>
             </div>
         </div>
     </main>

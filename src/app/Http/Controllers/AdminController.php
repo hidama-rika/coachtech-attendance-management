@@ -106,27 +106,75 @@ class AdminController extends Controller
     }
 
     /**
-     * 【FN043, FN044, FN046】スタッフ毎の月次勤怠一覧を表示
-     * 特定ユーザーの月次勤怠、前月・翌月移動
-     */
+    * 【FN043, FN044, FN046】スタッフ毎の月次勤怠一覧を表示
+    */
     public function staffMonthlyAttendance(Request $request, $id)
     {
         $user = User::findOrFail($id);
-        $month = $request->query('month', Carbon::now()->format('Y-m'));
-        $currentDate = Carbon::parse($month);
 
-        $attendances = $user->attendances()
-            ->whereYear('date', $currentDate->year)
-            ->whereMonth('date', $currentDate->month)
+        // 表示する月の決定（クエリパラメータ 'month' があれば使用、なければ今月）
+        $monthParam = $request->query('month');
+        $displayDate = $monthParam ? Carbon::parse($monthParam) : Carbon::today();
+
+        $attendances = Attendance::where('user_id', $user->id)
+            ->whereYear('date', $displayDate->year)
+            ->whereMonth('date', $displayDate->month)
             ->orderBy('date', 'asc')
             ->get();
 
-        return view('admin.staff.attendance_list', [
-            'user' => $user,
-            'attendances' => $attendances,
-            'displayDate' => $currentDate->format('Y/m'),
-            'prevMonth' => $currentDate->copy()->subMonth()->format('Y-m'),
-            'nextMonth' => $currentDate->copy()->addMonth()->format('Y-m'),
-        ]);
+        return view('admin.staff.attendance_list', compact('user', 'attendances', 'displayDate'));
+    }
+
+    /**
+     * CSV出力ロジック (FN045)
+     */
+    public function exportCsv(Request $request, $id)
+    {
+        // ここにCSVダウンロードのロジックを後で記述します
+        $user = User::findOrFail($id);
+        $monthParam = $request->query('month');
+        $displayDate = $monthParam ? Carbon::parse($monthParam) : Carbon::today();
+
+        $attendances = Attendance::where('user_id', $user->id)
+            ->whereYear('date', $displayDate->year)
+            ->whereMonth('date', $displayDate->month)
+            ->orderBy('date', 'asc')
+            ->get();
+
+        // CSVファイル名の作成 (例: 2023-06_西伶奈_勤怠.csv)
+        $fileName = $displayDate->format('Y-m') . '_' . $user->name . '_勤怠.csv';
+
+        $headers = [
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$fileName",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $callback = function() use ($attendances) {
+            $file = fopen('php://output', 'w');
+
+            // 文字化け防止（Excel用BOM追加）
+            fputs($file, $bom = chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+            // ヘッダー（1行目）
+            fputcsv($file, ['日付', '出勤時間', '退勤時間', '休憩合計', '合計勤務時間']);
+
+            // データ（2行目以降）
+            foreach ($attendances as $attendance) {
+                fputcsv($file, [
+                    Carbon::parse($attendance->date)->format('Y/m/d'),
+                    $attendance->check_in ? Carbon::parse($attendance->check_in)->format('H:i') : '',
+                    $attendance->check_out ? Carbon::parse($attendance->check_out)->format('H:i') : '',
+                    $attendance->total_rest_time,    // アクセサを使用
+                    $attendance->total_working_time // アクセサを使用
+                ]);
+            }
+            fclose($file);
+        };
+
+        // ❗ json ではなく stream
+        return response()->stream($callback, 200, $headers);
     }
 }
