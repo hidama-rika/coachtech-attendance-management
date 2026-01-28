@@ -69,7 +69,9 @@ Route::get('/admin/login', function () {
 
 
 // --- ログイン済みユーザーのみアクセス可能（一般・管理者共通） ---
-Route::middleware(['auth'])->group(function () {
+
+// ここにスタッフ用のルートが入ることで、未認証ユーザーは自動的にFortifyが用意する「メール認証誘導画面」にリダイレクト
+Route::middleware(['auth', 'verified'])->group(function () {
 
     // --- スタッフ用：勤怠管理 ---
     Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
