@@ -61,7 +61,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($users as $user)
+                        @forelse($users as $user)
                         <tr>
                             <td class="text-center">{{ $user->name }}</td>
                             <td class="text-center">{{ $user->email }}</td>
@@ -70,7 +70,11 @@
                                 <a href="{{ route('admin.staff.attendance', ['id' => $user->id]) }}" class="detail-link">詳細</a>
                             </td>
                         </tr>
-                        @endforeach
+                        @empty
+                        <tr>
+                            <td colspan="3" class="text-center">登録されているスタッフはいません。</td>
+                        </tr>
+                        @endforelse
 
                     </tbody>
                 </table>
