@@ -140,8 +140,9 @@ class AttendanceController extends Controller
         // 1. デザイン用の「2023/06」形式を作成
         $displayDate = $currentDate->format('Y/m');
 
-        // 2. データベース検索用の期間指定
+        // 2. データベース検索用の期間指定(N+1問題解消のため with('rests') を追加)
         $attendances = $user->attendances()
+            ->with('rests')
             ->whereYear('date', $currentDate->year)
             ->whereMonth('date', $currentDate->month)
             ->orderBy('date', 'asc')
