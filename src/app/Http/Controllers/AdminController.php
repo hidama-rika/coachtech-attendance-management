@@ -101,7 +101,7 @@ class AdminController extends Controller
      */
     public function staffList()
     {
-        $users = User::where('role', 0)->get();
+        $users = User::where('role', 0)->orderBy('id', 'asc')->get();
         return view('admin.staff.list', compact('users'));
     }
 
