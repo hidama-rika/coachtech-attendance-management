@@ -48,14 +48,24 @@
 
     <main class="stamp-container">
         <div class="stamp-wrapper">
+            {{-- 打刻完了メッセージ等の表示 --}}
+            @if (session('message'))
+                <div class="alert alert-success">{{ session('message') }}</div>
+            @endif
+
             {{-- ステータスバッジ --}}
             <div class="status-badge">
                 @if($status == 'out') 勤務外 @elseif($status == 'working') 出勤中 @elseif($status == 'resting') 休憩中 @else 退勤済 @endif
             </div>
 
-            {{-- 日時表示 --}}
-            <div class="date-display">2023年6月1日(木)</div>
-            <div class="time-display">08:00</div>
+            {{-- 日時表示：Carbonで現在の日付を日本語形式で表示 --}}
+            <div class="date-display">
+                {{ \Carbon\Carbon::now()->isoFormat('YYYY年M月D日(ddd)') }}
+            </div>
+            {{-- 時刻表示：初期値を表示し、JSでリアルタイム更新 --}}
+            <div class="time-display" id="current-time">
+                {{ \Carbon\Carbon::now()->format('H:i') }}
+            </div>
 
             {{-- 打刻アクションエリア --}}
             <div class="stamp-actions">
@@ -93,6 +103,17 @@
             </div>
         </div>
     </main>
+
+    {{-- 時刻を1秒ごとに更新するJavaScript --}}
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('current-time').textContent = `${hours}:${minutes}`;
+        }
+        setInterval(updateTime, 1000);
+    </script>
 
 </body>
 </html>
