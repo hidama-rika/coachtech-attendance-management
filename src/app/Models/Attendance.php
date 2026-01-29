@@ -12,7 +12,9 @@ class Attendance extends Model
 
     protected $fillable = ['user_id', 'date', 'check_in', 'check_out', 'remark'];
 
-    // app/Models/Attendance.php
+    protected $casts = [
+        'date' => 'date',
+]   ;
 
     // 休憩時間の合計を計算
     public function getTotalRestTimeAttribute()
