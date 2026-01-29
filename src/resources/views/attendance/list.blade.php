@@ -79,12 +79,18 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($attendances as $attendance)
+                        @forelse($attendances as $attendance)
                         <tr>
-                            {{-- 日付のフォーマットもCarbonで行う --}}
-                            <td>{{ Carbon::parse($attendance->date)->format('m/d') }}</td>
-                            <td>{{ Carbon::parse($attendance->check_in)->format('H:i') }}</td>
-                            <td>{{ $attendance->check_out ? Carbon::parse($attendance->check_out)->format('H:i') : '-' }}</td>
+                            {{-- 日付のフォーマット --}}
+                            <td class="text-center">
+                                {{ \Carbon\Carbon::parse($attendance->date)->format('m/d') }}
+                            </td>
+                            <td class="text-center">
+                                {{ \Carbon\Carbon::parse($attendance->check_in)->format('H:i') }}
+                            </td>
+                            <td class="text-center">
+                                {{ $attendance->check_out ? \Carbon\Carbon::parse($attendance->check_out)->format('H:i') : '-' }}
+                            </td>
 
                             {{-- ❗ モデルで定義したアクセサを呼び出す --}}
                             <td class="text-center">{{ $attendance->total_rest_time }}</td>
@@ -95,7 +101,12 @@
                                 <a href="/attendance/detail/{{ $attendance->id }}" class="detail-link">詳細</a>
                             </td>
                         </tr>
-                        @endforeach
+                        @empty
+                        {{-- データが1件もない場合に表示される行 --}}
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 20px;">今月の勤怠データはありません</td>
+                        </tr>
+                        @endforelse
 
                     </tbody>
                 </table>

@@ -84,22 +84,32 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($attendances as $attendance)
+                        {{-- @forelse を使い、データがない場合の表示を記述 --}}
+                        @forelse($attendances as $attendance)
                         <tr>
                             {{-- $attendance->user でUserモデルのデータにアクセス --}}
                             <td>{{ $attendance->user->name }}</td>
-                            <td>{{ Carbon::parse($attendance->check_in)->format('H:i') }}</td>
-                            <td>{{ $attendance->check_out ? Carbon::parse($attendance->check_out)->format('H:i') : '-' }}</td>
+                            <td class="text-center">
+                                {{ \Carbon\Carbon::parse($attendance->check_in)->format('H:i') }}
+                            </td>
+                            <td class="text-center">
+                                {{ $attendance->check_out ? Carbon::parse($attendance->check_out)->format('H:i') : '-' }}
+                            </td>
 
                             {{-- Attendanceモデルで作ったアクセサがここでも使えます --}}
-                            <td>{{ $attendance->total_rest_time }}</td>
-                            <td>{{ $attendance->total_working_time }}</td>
+                            <td class="text-center">{{ $attendance->total_rest_time }}</td>
+                            <td class="text-center">{{ $attendance->total_working_time }}</td>
 
-                            <td>
-                                <a href="{{ route('attendance.detail', ['id' => $attendance->id]) }}">詳細</a>
+                            <td class="text-center">
+                                <a href="{{ route('admin.attendance.detail', ['id' => $attendance->id]) }}">詳細</a>
                             </td>
                         </tr>
-                        @endforeach
+                        @empty
+                        {{-- データが1件もない場合に表示される行 --}}
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 20px;">本日の勤怠データはありません</td>
+                        </tr>
+                        @endforelse
 
                     </tbody>
                 </table>
