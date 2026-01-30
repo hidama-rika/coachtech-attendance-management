@@ -26,7 +26,7 @@ class AttendanceCorrectRequest extends Model
     // 修正後の具体的な打刻内容（1対1のリレーション）
     public function correctionAttendanceDetail()
     {
-        return $this->hasOne(CorrectionAttendanceDetail::class);
+        return $this->hasOne(CorrectionAttendanceDetail::class, 'attendance_correct_request_id');
     }
 
     // 修正後の具体的な休憩内容（1対多）

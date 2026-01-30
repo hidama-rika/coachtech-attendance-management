@@ -52,9 +52,10 @@
 
             {{-- 承認状態タブ --}}
             <div class="status-tabs">
-                {{-- 現在の選択状態に合わせて active クラスを切り替える想定です --}}
-                <a href="#" class="tab-item active">承認待ち</a>
-                <a href="#" class="tab-item">承認済み</a>
+                {{-- クエリパラメータ 'tab' が 'approved' でなければ『承認待ち』をアクティブにする --}}
+                <a href="{{ route('admin.request.list', ['tab' => 'pending']) }}" class="tab-item {{ request('tab') != 'approved' ? 'active' : '' }}">承認待ち</a>
+
+                <a href="{{ route('admin.request.list', ['tab' => 'approved']) }}" class="tab-item {{ request('tab') == 'approved' ? 'active' : '' }}">承認済み</a>
             </div>
 
             {{-- 申請一覧テーブル --}}
@@ -71,26 +72,39 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {{-- 以下、ダミーデータ（ループで出力する想定） --}}
+                        {{-- 表示するデータをタブの状態によって切り替える --}}
+                        @php
+                            $displayRequests = request('tab') == 'approved' ? $approvedRequests : $pendingRequests;
+                        @endphp
+
+                        @forelse($displayRequests as $request)
                         <tr>
-                            <td class="text-center">承認待ち</td>
-                            <td class="text-center">西玲奈</td>
-                            <td class="text-center">2023/06/01</td>
-                            <td class="text-center">遅延のため</td>
-                            <td class="text-center">2023/06/02</td>
-                            <td class="text-center"><a href="/admin/attendance/1" class="detail-link">詳細</a></td>
+                            <td class="text-center">
+                                {{ $request->status == 'pending' ? '承認待ち' : '承認済み' }}
+                            </td>
+                            <td class="text-center">{{ $request->user->name }}</td>
+                            <td class="text-center">
+                                {{ \Carbon\Carbon::parse($request->attendance->date)->format('Y/m/d') }}
+                            </td>
+                            <td class="text-center">
+                                {{-- 修正申請時の備考（理由）を表示 --}}
+                                {{ $request->correctionAttendanceDetail->remark ?? '---' }}
+                            </td>
+                            <td class="text-center">
+                                {{ $request->created_at->format('Y/m/d') }}
+                            </td>
+                            <td class="text-center">
+                                {{-- 管理者用の詳細承認画面へリンク --}}
+                                <a href="{{ route('admin.request.show', ['id' => $request->id]) }}" class="detail-link">詳細</a>
+                            </td>
                         </tr>
-                        {{-- 繰り返し分... --}}
-                        @foreach(range(1, 5) as $i)
+                        @empty
                         <tr>
-                            <td class="text-center">承認待ち</td>
-                            <td class="text-center">スタッフ</td>
-                            <td class="text-center">2023/06/01</td>
-                            <td class="text-center">遅延のため</td>
-                            <td class="text-center">2023/06/02</td>
-                            <td class="text-center"><a href="#" class="detail-link">詳細</a></td>
+                            <td colspan="6" class="text-center" style="padding: 20px;">
+                                {{ request('tab') == 'approved' ? '承認済みの申請はありません' : '承認待ちの申請はありません' }}
+                            </td>
                         </tr>
-                        @endforeach
+                        @endforelse
                     </tbody>
                 </table>
             </div>
