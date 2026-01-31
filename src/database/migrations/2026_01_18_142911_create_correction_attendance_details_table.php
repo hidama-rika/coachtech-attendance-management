@@ -16,9 +16,14 @@ class CreateCorrectionAttendanceDetailsTable extends Migration
         Schema::create('correction_attendance_details', function (Blueprint $table) {
             $table->id();
 
+            // foreignId ではなく、一度 unsignedBigInteger でカラムだけ作る
+            $table->unsignedBigInteger('attendance_correct_request_id');
+
             // 親の申請データと紐付け
-            $table->foreignId('attendance_correct_request_id')
-                ->constrained('attendance_correct_requests', 'id', 'correct_request_attendance_fk') // 名前が長すぎる場合があるため指定
+            // その後、明示的に短い名前で制約を付ける
+            $table->foreign('attendance_correct_request_id', 'corr_att_req_fk')
+                ->references('id')
+                ->on('attendance_correct_requests')
                 ->cascadeOnDelete();
 
             // 修正後の予定時間
