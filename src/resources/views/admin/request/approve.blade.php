@@ -51,14 +51,15 @@
             <h1 class="page-title">勤怠詳細</h1>
 
             {{-- 勤怠詳細テーブル --}}
-            <form action="#" method="POST" class="attendance-form">
+            {{-- 承認処理（RequestController の approve メソッドへ送信） --}}
+            <form action="{{ route('admin.request.approve', ['id' => $request->id]) }}" method="POST" class="attendance-form">
                 @csrf
                 {{-- 名前 --}}
                 <div class="form-group">
                     <label class="form-label">名前</label>
                     <div class="form-text name-display">
-                        <span>西</span>
-                        <span>伶奈</span>
+                        {{-- ユーザー名を名字と名前に分ける場合は、スペース等で調整 --}}
+                        <span>{{ $request->user->name }}</span>
                     </div>
                 </div>
 
@@ -66,48 +67,51 @@
                 <div class="form-group">
                     <label class="form-label">日付</label>
                     <div class="form-row-date">
-                        <span class="date-unit">2023年</span>
-                        <span class="date-unit">6月1日</span>
-                    </div>
+                        <span class="date-unit">{{ \Carbon\Carbon::parse($request->attendance->date)->format('Y年') }}</span>
+                        <span class="date-unit">{{ \Carbon\Carbon::parse($request->attendance->date)->format('n月j日') }}</span>
+                </div>
                 </div>
 
-                {{-- 出勤・退勤 --}}
+                {{-- 出勤・退勤（修正申請詳細テーブルから取得） --}}
                 <div class="form-group">
                     <label class="form-label">出勤・退勤</label>
                     <div class="form-row-text">
-                        <span class="text-value">09:00</span>
+                        <span class="text-value">{{ \Carbon\Carbon::parse($request->correctionAttendanceDetail->check_in)->format('H:i') }}</span>
                         <span class="range-separator">～</span>
-                        <span class="text-value">18:00</span>
+                        <span class="text-value">{{ \Carbon\Carbon::parse($request->correctionAttendanceDetail->check_out)->format('H:i') }}</span>
                     </div>
                 </div>
 
-                {{-- 休憩 --}}
+                {{-- 休憩（修正申請休憩詳細テーブルをループで表示） --}}
+                @foreach($request->restDetails as $index => $rest)
                 <div class="form-group">
-                    <label class="form-label">休憩</label>
+                    <label class="form-label">休憩{{ $index > 0 ? $index + 1 : '' }}</label>
                     <div class="form-row-text">
-                        <span class="text-value">12:00</span>
+                        <span class="text-value">{{ \Carbon\Carbon::parse($rest->start_time)->format('H:i') }}</span>
                         <span class="range-separator">～</span>
-                        <span class="text-value">13:00</span>
+                        <span class="text-value">{{ \Carbon\Carbon::parse($rest->end_time)->format('H:i') }}</span>
                     </div>
                 </div>
-
-                {{-- 休憩2（追加用） --}}
-                <div class="form-group">
-                    <label class="form-label">休憩2</label>
-                    <div class="form-row-text">
-                    <span class="text-value"></span> {{-- 空データの場合 --}}
-                </div>
-                </div>
+                @endforeach
 
                 {{-- 備考 --}}
                 <div class="form-group">
                     <label class="form-label">備考</label>
-                    <div class="form-text-remark">電車遅延のため</div>
+                    <div class="form-text-remark">
+                        {{ $request->correctionAttendanceDetail->remark }}
+                    </div>
                 </div>
 
                 {{-- 承認ボタン --}}
                 <div class="form-button-area">
-                    <button type="submit" class="submit-button">承認</button>
+                    {{-- ステータスが pending の場合のみボタンを表示 --}}
+                    {{-- 未承認：通常の承認ボタン --}}
+                    @if($request->status == 'pending')
+                        <button type="submit" class="submit-button">承認</button>
+                    @else
+                        {{-- 承認済み：CSSクラス .approved-button を適用 --}}
+                        <div class="approved-button">承認済み</div>
+                    @endif
                 </div>
             </form>
         </div>
