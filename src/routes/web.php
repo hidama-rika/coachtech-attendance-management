@@ -20,9 +20,9 @@ use App\Http\Controllers\RequestController;
 // 開発用表示ルート Route::view('URI', 'ビュー名')
 
 // 開発用表示ルート 一般ユーザー
-Route::view('/register', 'auth.register');
+// Route::view('/register', 'auth.register');
 // Route::view('/login', 'auth.login')->name('login');
-Route::view('/verify', 'auth.verify-email');
+// Route::view('/verify', 'auth.verify-email');
 
 // attendanceディレクトリ内のファイルを参照
 // Route::view('/attendance', 'attendance.index');
@@ -57,6 +57,11 @@ Route::view('/verify', 'auth.verify-email');
 
 // --- 認証画面の定義 (Authenticate.phpのリダイレクト先として必要) ---
 
+// 会員登録画面（一般ユーザー用）
+Route::get('/register', function () {
+    return view('auth.register');
+})->name('register');
+
 // 一般ユーザー用ログイン画面
 Route::get('/login', function () {
     return view('auth.login');
@@ -66,6 +71,12 @@ Route::get('/login', function () {
 Route::get('/admin/login', function () {
     return view('admin.login');
 })->name('admin.login');
+
+// メール認証誘導画面
+Route::get('/email/verify', function () {
+    return view('auth.verify-email');
+})->middleware('auth')->name('verification.notice');
+
 
 
 // --- ログイン済みユーザーのみアクセス可能（一般・管理者共通） ---
