@@ -20,6 +20,7 @@ class UsersTableSeeder extends Seeder
             'name' => '管理者 ロール',
             'email' => 'admin@example.com',
             'password' => Hash::make('password123'),
+            'email_verified_at' => now(), // ★検証済みとして追加★
             'role' => 1, // 管理者権限
         ]);
 
@@ -28,6 +29,7 @@ class UsersTableSeeder extends Seeder
             'name' => 'テスト スタッフ',
             'email' => 'staff@example.com',
             'password' => Hash::make('password123'),
+            'email_verified_at' => now(), // ★検証済みとして追加★
             'role' => 0, // 一般スタッフ
         ]);
 
@@ -46,6 +48,7 @@ class UsersTableSeeder extends Seeder
                 'name' => $userData['name'],
                 'email' => $userData['email'],
                 'password' => Hash::make('password123'), // 全員共通パスワード
+                'email_verified_at' => now(), // ★検証済みとして追加★
                 'role' => 0, // 一般スタッフ
             ]);
         }
