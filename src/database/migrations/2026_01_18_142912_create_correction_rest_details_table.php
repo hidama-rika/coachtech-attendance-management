@@ -16,10 +16,17 @@ class CreateCorrectionRestDetailsTable extends Migration
         Schema::create('correction_rest_details', function (Blueprint $table) {
             $table->id();
 
+            // foreignId ではなく、一度 unsignedBigInteger でカラムだけ作る
+            $table->unsignedBigInteger('attendance_correct_request_id');
+
             // 親の申請データと紐付け
-            $table->foreignId('attendance_correct_request_id')
-                ->constrained('attendance_correct_requests', 'id', 'correct_request_rest_fk')
+            $table->foreign('attendance_correct_request_id', 'corr_rest_req_fk')
+                ->references('id')
+                ->on('attendance_correct_requests')
                 ->cascadeOnDelete();
+
+            // 修正対象の休憩ID（新規追加の場合はnullを許容）
+            $table->foreignId('rest_id')->nullable()->constrained('rests')->cascadeOnDelete();
 
             // 修正後の休憩時間
             $table->time('start_time')->comment('修正後の休憩開始');
