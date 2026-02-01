@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>管理者-勤怠一覧画面</title>
     <link rel="stylesheet" href="{{ asset('css/sanitize.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/common.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin.list.css')}}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -65,7 +66,7 @@
                 </div>
 
                 {{-- 4. 翌日へのリンク --}}
-                <a href="{{ route('admin.attendance.list', ['date' => $nextDate]) }}" class="date-pager-btn">翌日 
+                <a href="{{ route('admin.attendance.list', ['date' => $nextDate]) }}" class="date-pager-btn">翌日
                     <img src="{{ asset('storage/img/arrow.png') }}" alt="矢印マーク" class="arrowright-icon">
                 </a>
             </div>
