@@ -79,34 +79,50 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($attendances as $attendance)
-                        <tr>
-                            {{-- 日付のフォーマット --}}
-                            <td class="text-center">
-                                {{ \Carbon\Carbon::parse($attendance->date)->format('m/d') }}
-                            </td>
-                            <td class="text-center">
-                                {{ \Carbon\Carbon::parse($attendance->check_in)->format('H:i') }}
-                            </td>
-                            <td class="text-center">
-                                {{ $attendance->check_out ? \Carbon\Carbon::parse($attendance->check_out)->format('H:i') : '-' }}
-                            </td>
+                        {{-- $period はコントローラーで作った「その月の全日付」の配列 --}}
+                        @foreach($period as $date)
+                            @php
+                                // Carbonオブジェクト同士で比較させる★
+                                $attendance = $attendances->firstWhere('date', $date->startOfDay());
+                            @endphp
 
-                            {{-- ❗ モデルで定義したアクセサを呼び出す --}}
-                            <td class="text-center">{{ $attendance->total_rest_time }}</td>
-                            <td class="text-center">{{ $attendance->total_working_time }}</td>
+                            <tr>
+                                {{-- 日付と曜日：06/01(木) 形式 --}}
+                                <td class="text-center">
+                                    {{ $date->isoFormat('MM/DD(ddd)') }}
+                                </td>
 
-                            {{-- 詳細リンクにはIDを忘れずに --}}
-                            <td class="text-center">
-                                <a href="/attendance/detail/{{ $attendance->id }}" class="detail-link">詳細</a>
-                            </td>
-                        </tr>
-                        @empty
-                        {{-- データが1件もない場合に表示される行 --}}
-                        <tr>
-                            <td colspan="6" style="text-align: center; padding: 20px;">今月の勤怠データはありません</td>
-                        </tr>
-                        @endforelse
+                                @if($attendance)
+                                    {{-- データがある場合 --}}
+
+                                    <td class="text-center">
+                                        {{ \Carbon\Carbon::parse($attendance->check_in)->format('H:i') }}
+                                    </td>
+                                    <td class="text-center">
+                                        {{ $attendance->check_out ? \Carbon\Carbon::parse($attendance->check_out)->format('H:i') : '-' }}
+                                    </td>
+
+                                    {{-- ❗ モデルで定義したアクセサを呼び出す --}}
+                                    <td class="text-center">{{ $attendance->total_rest_time }}</td>
+                                    <td class="text-center">{{ $attendance->total_working_time }}</td>
+
+                                    {{-- 詳細リンクにはIDを忘れずに --}}
+                                    <td class="text-center">
+                                        <a href="/attendance/detail/{{ $attendance->id }}" class="detail-link">詳細</a>
+                                    </td>
+                                @else
+                                    {{-- データがない場合（Figma通り空欄にする） --}}
+                                    <td class="text-center"></td>
+                                    <td class="text-center"></td>
+                                    <td class="text-center"></td>
+                                    <td class="text-center"></td>
+                                    <td class="text-center">
+                                        {{-- 勤怠がない日でも、その日付の「新規登録/修正申請」へ飛べるようにしておくと親切です --}}
+                                        <a href="{{ route('attendance.detail', ['id' => 'new', 'date' => $date->format('Y-m-d')]) }}" class="detail-link">詳細</a>
+                                    </td>
+                                @endif
+                            </tr>
+                        @endforeach
 
                     </tbody>
                 </table>
