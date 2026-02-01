@@ -137,6 +137,9 @@ class AttendanceController extends Controller
         $monthParam = $request->query('month', Carbon::now()->format('Y-m'));
         $currentDate = Carbon::parse($monthParam);
 
+        // パースする際に、その月の「1日」として扱うように明示
+        $currentDate = Carbon::parse($monthParam)->startOfMonth();
+
         // 1. デザイン用の「2023/06」形式を作成
         $displayDate = $currentDate->format('Y/m');
 
@@ -152,7 +155,20 @@ class AttendanceController extends Controller
         $prevMonth = $currentDate->copy()->subMonth()->format('Y-m');
         $nextMonth = $currentDate->copy()->addMonth()->format('Y-m');
 
-        return view('attendance.list', compact('attendances', 'displayDate', 'prevMonth', 'nextMonth'));
+        // 4. 【追加】その月の全日付リストを作成 (CarbonPeriodを使用)
+        // startOfMonth() から endOfMonth() までの1日刻みのリスト
+        $period = \Carbon\CarbonPeriod::create(
+            $currentDate->copy()->startOfMonth(),
+            $currentDate->copy()->endOfMonth()
+        )->toArray();
+
+        return view('attendance.list', compact(
+            'attendances',
+            'displayDate',
+            'prevMonth',
+            'nextMonth',
+            'period' // Bladeに渡す
+        ));
     }
 
     /**

@@ -23,6 +23,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        // Carbonの言語を日本語に設定
+        \Carbon\Carbon::setLocale('ja');
     }
 }
