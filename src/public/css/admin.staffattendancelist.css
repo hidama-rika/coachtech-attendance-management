@@ -83,6 +83,7 @@ html {
     align-items: center;
 
     text-decoration: none;
+    cursor: pointer;
 }
 
 .nav-text {

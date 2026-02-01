@@ -84,6 +84,14 @@ Route::get('/email/verify', function () {
 // ここにスタッフ用のルートが入ることで、未認証ユーザーは自動的にFortifyが用意する「メール認証誘導画面」にリダイレクト
 Route::middleware(['auth', 'verified'])->group(function () {
 
+    // ★ここにログアウトの定義を追加★
+    Route::post('/logout', function () {
+        auth()->logout();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+        return redirect('/login');
+    })->name('logout');
+
     // --- スタッフ用：勤怠管理 ---
     Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
     Route::post('/attendance/start', [AttendanceController::class, 'checkIn']);
