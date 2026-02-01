@@ -1,6 +1,7 @@
 body {
+    background-color: #F0EFF2;
     margin: 0;
-    font-family: sans-serif;
+    font-family: 'Inter', 'sans-serif';
     /* ❗ 追加/修正: bodyの最小幅を保証し、横スクロールを発生させる */
     width: 100%;
     height: auto;
@@ -47,23 +48,27 @@ body {
 
 /* ステータスバッジ（丸角のグレー枠） */
 .status-badge {
+    width: 100px;
+    height: 40px;
     background-color: #C8C8C8;
     color: #696969;
     padding: 4px 16px;
-    border-radius: 20px;
-    font-size: 18px;
-    font-weight: bold;
+    border-radius: 50px;
+    font-size: 1.125rem;
+    font-weight: 700;
 }
 
 .date-display {
-    font-size: 40px;
+    font-size: 2.5rem;
     font-weight: 400;
+    letter-spacing: 0.1em;
 }
 
 .time-display {
-    font-size: 80px;
+    font-size: 5rem;
     font-weight: 700;
-    margin-bottom: 20px;
+    letter-spacing: 0.08em;
+    margin-bottom: 60px;
 }
 
 /* ❗ 2つのボタンを横並びで中央に配置する設定 */
@@ -79,9 +84,10 @@ body {
     width: 221px;
     height: 77px;
     border: none;
-    border-radius: 4px;
-    font-size: 18px;
-    font-weight: bold;
+    border-radius: 20px;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
     cursor: pointer;
     display: flex;
     justify-content: center;
