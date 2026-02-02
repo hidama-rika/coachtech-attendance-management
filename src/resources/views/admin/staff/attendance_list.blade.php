@@ -81,21 +81,48 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($attendances as $attendance)
-                        <tr>
-                            {{-- 日付と曜日を表示 --}}
-                            <td class="text-center">
-                                {{ \Carbon\Carbon::parse($attendance->date)->format('m/d') }}({{ \Carbon\Carbon::parse($attendance->date)->isoFormat('ddd') }})
-                            </td>
-                            <td>{{ Carbon::parse($attendance->check_in)->format('H:i') }}</td>
-                            <td>{{ $attendance->check_out ? Carbon::parse($attendance->check_out)->format('H:i') : '-' }}</td>
+                        @foreach($period as $date)
+                            @php
+                                // $date は Carbonオブジェクトなので、同じ Carbon型に揃えた $attendances から探す
+                                $attendance = $attendances->firstWhere('date', $date->startOfDay());
+                            @endphp
 
-                            {{-- 休憩合計と勤務合計（アクセサを使用） --}}
-                            <td class="text-center">{{ $attendance->total_rest_time }}</td>
-                            <td class="text-center">{{ $attendance->total_working_time }}</td>
+                            <tr>
+                                {{-- 日付表示：必ず存在する $date を使う --}}
+                                <td class="text-center">
+                                    {{ $date->format('m/d') }}({{ $date->isoFormat('ddd') }})
+                                </td>
 
-                            <td class="text-center"><a href="{{ route('admin.attendance.detail', ['id' => $attendance->id]) }}" class="detail-link">詳細</a></td>
-                        </tr>
+                                @if($attendance)
+                                    {{-- データがある場合 --}}
+
+                                    <td class="text-center">
+                                        {{ \Carbon\Carbon::parse($attendance->check_in)->format('H:i') }}
+                                    </td>
+                                    <td class="text-center">
+                                        {{ $attendance->check_out ? \Carbon\Carbon::parse($attendance->check_out)->format('H:i') : '-' }}
+                                    </td>
+
+                                    {{-- ❗ モデルで定義したアクセサを呼び出す --}}
+                                    <td class="text-center">{{ $attendance->total_rest_time }}</td>
+                                    <td class="text-center">{{ $attendance->total_working_time }}</td>
+
+                                    {{-- 詳細リンクにはIDを忘れずに --}}
+                                    <td class="text-center">
+                                        <a href="/admin/attendance/{{ $attendance->id }}" class="detail-link">詳細</a>
+                                    </td>
+                                @else
+                                    {{-- データがない場合（Figma通り空欄にする） --}}
+                                    <td class="text-center"></td>
+                                    <td class="text-center"></td>
+                                    <td class="text-center"></td>
+                                    <td class="text-center"></td>
+                                    <td class="text-center">
+                                        {{-- 勤怠がない日でも、その日付の「新規登録/修正申請」へ飛べるようにしておくと親切です --}}
+                                        <a href="{{ route('admin.attendance.detail', ['id' => 'new', 'date' => $date->format('Y-m-d')]) }}" class="detail-link">詳細</a>
+                                    </td>
+                                @endif
+                            </tr>
                         @endforeach
                     </tbody>
                 </table>
