@@ -146,17 +146,37 @@ class AdminController extends Controller
     {
         $user = User::findOrFail($id);
 
-        // 表示する月の決定（クエリパラメータ 'month' があれば使用、なければ今月）
-        $monthParam = $request->query('month');
-        $displayDate = $monthParam ? Carbon::parse($monthParam) : Carbon::today();
+        // 1. 表示する月の決定（パラメータがなければ今月の1日としてパース）
+        $monthParam = $request->query('month', Carbon::today()->format('Y-m'));
+        $currentDate = Carbon::parse($monthParam)->startOfMonth();
 
-        $attendances = Attendance::where('user_id', $user->id)
-            ->whereYear('date', $displayDate->year)
-            ->whereMonth('date', $displayDate->month)
-            ->orderBy('date', 'asc')
-            ->get();
+        // 2. 勤怠データの取得（リレーション含め、日付をCarbonオブジェクトにしておく）
+        $attendances = Attendance::with('rests')
+            ->where('user_id', $user->id)
+            ->whereYear('date', $currentDate->year)
+            ->whereMonth('date', $currentDate->month)
+            ->get()
+            ->map(function ($attendance) {
+                // Bladeの firstWhere でマッチさせるため、dateをCarbonの「その日の開始時刻」にする
+                $attendance->date = Carbon::parse($attendance->date)->startOfDay();
+                return $attendance;
+            });
 
-        return view('admin.staff.attendance_list', compact('user', 'attendances', 'displayDate'));
+        // 3. その月の全日付リストを作成 (AttendanceControllerの手法に合わせる)
+        $period = \Carbon\CarbonPeriod::create(
+            $currentDate->copy()->startOfMonth(),
+            $currentDate->copy()->endOfMonth()
+        )->toArray();
+
+        // 4. 表示用データ
+        $displayDate = $currentDate; // Blade側で ->format('Y/m') できるようにCarbonのまま渡す
+
+        return view('admin.staff.attendance_list', compact(
+            'user',
+            'attendances',
+            'displayDate',
+            'period'
+        ));
     }
 
     /**
