@@ -89,10 +89,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // ★ここにログアウトの定義を追加★
     Route::post('/logout', function () {
+
+        // ログアウトする前に「管理者かどうか」を判定して変数に入れておく
+        $isAdmin = auth()->user() && auth()->user()->role === 1;
+
         auth()->logout();
         request()->session()->invalidate();
         request()->session()->regenerateToken();
-        return redirect('/login');
+
+        // 判定結果に基づいてリダイレクト先を分ける
+        return $isAdmin ? redirect('/admin/login') : redirect('/login');
     })->name('logout');
 
     // --- スタッフ用：勤怠管理 ---
