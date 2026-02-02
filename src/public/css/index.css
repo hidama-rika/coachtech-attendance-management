@@ -52,10 +52,14 @@ body {
     height: 40px;
     background-color: #C8C8C8;
     color: #696969;
-    padding: 4px 16px;
     border-radius: 50px;
     font-size: 1.125rem;
     font-weight: 700;
+
+    /* 文字を上下左右の中央に配置 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .date-display {
