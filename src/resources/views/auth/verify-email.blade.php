@@ -39,7 +39,7 @@
                 </a>
 
                 {{-- 認証メールを再送するリンク（実際はPOSTフォーム推奨） --}}
-                <form method="POST" action="" class="resend-form">
+                <form method="POST" action="{{ route('verification.send') }}" class="resend-form">
                     @csrf
                     <button type="submit" class="verify-email-link">
                         認証メールを再送する
