@@ -55,6 +55,8 @@ class LoginRequest extends FormRequest
     public function messages()
     {
         return [
+            // 要件 FN016: 未入力の場合
+
             // FN009 - 1.1 未入力の場合
             'email.required' => 'メールアドレスを入力してください',
 

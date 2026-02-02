@@ -6,8 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>管理者-ログイン</title>
     <link rel="stylesheet" href="{{ asset('css/sanitize.css') }}">
-    <!-- <link rel="stylesheet" href="{{ asset('css/admin.login.css')}}"> -->
-    <link rel="stylesheet" href="http://localhost/css/admin.login.css">
+    <link rel="stylesheet" href="{{ asset('css/admin_login.css')}}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
@@ -30,7 +29,7 @@
 
             <div class="form-title">管理者ログイン</div>
 
-            <form class="form" action="/login" method="post" novalidate>
+            <form class="form" action="{{ url('/admin/login') }}" method="post" novalidate>
                 @csrf
 
                 {{-- メールアドレス --}}

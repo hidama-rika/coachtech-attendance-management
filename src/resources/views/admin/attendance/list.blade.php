@@ -50,7 +50,7 @@
     <main class="list-container">
         <div class="list-form-container">
             {{-- 1. タイトルを動的に変更（例：2023年06月01日の勤怠） --}}
-            <h1 class="page-title">{{ Carbon::parse($displayDate)->isoFormat('YYYY年MM月DD日') }}の勤怠</h1>
+            <h1 class="page-title">{{ \Carbon\Carbon::parse($displayDate)->isoFormat('YYYY年M月D日') }}の勤怠</h1>
 
             {{-- 日付選択バー --}}
             <div class="date-pager">
@@ -94,7 +94,7 @@
                                 {{ \Carbon\Carbon::parse($attendance->check_in)->format('H:i') }}
                             </td>
                             <td class="text-center">
-                                {{ $attendance->check_out ? Carbon::parse($attendance->check_out)->format('H:i') : '-' }}
+                                {{ $attendance->check_out ? \Carbon\Carbon::parse($attendance->check_out)->format('H:i') : '-' }}
                             </td>
 
                             {{-- Attendanceモデルで作ったアクセサがここでも使えます --}}

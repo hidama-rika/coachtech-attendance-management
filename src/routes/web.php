@@ -72,6 +72,9 @@ Route::get('/admin/login', function () {
     return view('admin.login');
 })->name('admin.login');
 
+// 管理者ログイン処理（送信用：POST）
+Route::post('/admin/login', [AdminController::class, 'login']);
+
 // メール認証誘導画面
 Route::get('/email/verify', function () {
     return view('auth.verify-email');

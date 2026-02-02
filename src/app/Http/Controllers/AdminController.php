@@ -8,9 +8,43 @@ use App\Models\Attendance;
 use App\Models\AttendanceCorrectRequest; // 申請モデル
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB; // トランザクション用
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\LoginRequest;
 
 class AdminController extends Controller
 {
+    /**
+     * 管理者ログイン処理
+     */
+    public function login(LoginRequest $request)
+    {
+        // 1. バリデーションは LoginRequest で完結しているため、ここではデータを取り出すだけ
+        $credentials = $request->only(['email', 'password']);
+
+        // 2. 認証試行
+        // Auth::attempt は「一致するユーザーがいればログイン状態にする」関数です
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+
+            // ログインしたユーザーが管理者（role=1）かチェック
+            if (auth()->user()->role === 1) {
+                // 管理者なら管理者用の一覧ページへ
+                return redirect()->route('admin.attendance.list');
+            }
+
+            // 管理者でなければログアウトさせてエラー（一般ユーザーが管理者入口から入るのを防ぐ）
+            Auth::logout();
+            return back()->withErrors([
+                'email' => '管理者権限がありません。',
+            ]);
+        }
+
+        // 3. 認証失敗時
+        return back()->withErrors([
+            'email' => 'ログイン情報が登録されていません',
+        ])->onlyInput('email');
+    }
+
     /**
      * 【FN034, FN035】全スタッフの日次勤怠一覧を表示
      * デフォルトは当日、前日・翌日の移動機能付き
