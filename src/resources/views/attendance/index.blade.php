@@ -49,10 +49,6 @@
 
     <main class="stamp-container">
         <div class="stamp-wrapper">
-            {{-- 打刻完了メッセージ等の表示 --}}
-            @if (session('message'))
-                <div class="alert alert-success">{{ session('message') }}</div>
-            @endif
 
             {{-- ステータスバッジ --}}
             <div class="status-badge">
