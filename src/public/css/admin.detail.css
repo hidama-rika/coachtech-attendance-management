@@ -120,16 +120,60 @@ body {
     gap: 40px;
 }
 
-/* 入力フィールド */
+/* ❗ 入力フィールド自体の基本スタイル */
 .input-field {
     width: 120px;
     height: 35px;
     border: 1px solid #CCCCCC;
     border-radius: 4px;
-    text-align: center;
     font-size: 1rem;
     font-family: 'Inter', 'sans-serif';
     font-weight: 700;
+    text-align: center;
+    /* 基本の中央揃え */
+
+    /* ❗ ここを追加：Flexboxで内部要素を中央に集める */
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+/* 1. 時計アイコンを非表示にする */
+.form-container .input-field::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+}
+
+/* 2. 未入力時のハイフン（--:--）を完全に透明化する */
+/* color ではなく opacity を 0 にすることで確実に消えます */
+.form-container .input-field::-webkit-datetime-edit {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    opacity: 0;
+    /* ❗ これでハイフンが見えなくなります */
+}
+
+/* 3. 入力済み、またはフォーカス時は不透明にして表示する */
+.form-container .input-field:focus::-webkit-datetime-edit,
+.form-container .input-field:valid::-webkit-datetime-edit {
+    opacity: 1;
+    color: #000000;
+}
+
+/* 4. 内部の数値を中央に寄せる */
+.form-container .input-field::-webkit-datetime-edit-fields-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+/* 5. 編集中のフィールド（時・分）の位置調整 */
+input[type="time"]::-webkit-datetime-edit-fields-wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
 }
 
 /* --- 備考（textarea） --- */
@@ -250,4 +294,40 @@ body {
         margin-left: 10px;
         gap: 10px;
     }
+}
+
+/* セレクタを重ねて詳細度を上げる */
+.form-container .input-field {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    /* その他基本スタイル */
+}
+
+/* Shadow DOM の指定も、親クラスを含めて記述 */
+.form-container .input-field::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+}
+
+/* 未入力時のハイフンを透明にする */
+.form-container .input-field::-webkit-datetime-edit {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    color: transparent;
+}
+
+/* 入力済み、またはフォーカス時は黒色を表示 */
+/* :placeholder-shown が使えないため、:valid や :focus を活用 */
+.form-container .input-field:focus::-webkit-datetime-edit,
+.form-container .input-field:valid::-webkit-datetime-edit {
+    color: #000000;
+}
+
+/* 内部の時・分フィールドも中央寄せ */
+.form-container .input-field::-webkit-datetime-edit-fields-wrapper {
+    display: flex;
+    justify-content: center;
 }

@@ -8,6 +8,7 @@ use App\Models\AttendanceCorrectRequest;
 use App\Models\CorrectionAttendanceDetail;
 use App\Models\Rest;
 use Carbon\Carbon;
+use App\Http\Requests\AttendanceCorrectionRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -33,55 +34,45 @@ class RequestController extends Controller
     /**
      * 【スタッフ側】修正申請の保存処理 (FN028, FN030)
      */
-    public function store(Request $request, $id)
+    public function store(AttendanceCorrectionRequest $request, $id)
     {
-        // // 1. バリデーション (FN028, FN029)（以前作成したFormRequestを使用してもOK）
-        $request->validate([
-            'check_in' => 'required',
-            'check_out' => 'required|after:check_in',
-            'remark' => 'required',
-        ], [
-            'check_out.after' => '出勤時間もしくは退勤時間が不適切な値です',
-            'remark.required' => '備考を記入してください',
-        ]);
 
         DB::transaction(function () use ($request, $id) {
             $user = Auth::user();
 
-            // 2. 修正申請本体の作成
+            // 1. 修正申請本体の作成
             $correctRequest = AttendanceCorrectRequest::create([
                 'user_id' => $user->id,
                 'attendance_id' => $id,
                 'status' => 'pending',
             ]);
 
-            // 3. ★【重要】勤怠詳細（出退勤・備考）の保存を追加
+            // 2. ★【重要】勤怠詳細（出退勤・備考）の保存を追加
             $correctRequest->correctionAttendanceDetail()->create([
                 'check_in' => $request->check_in,
                 'check_out' => $request->check_out,
                 'remark' => $request->remark,
             ]);
 
-            // 4. ★既存の休憩データの修正分をループで保存
+            // 3. 既存の休憩データの修正分を保存（キー名を start_time / end_time に統一）
             if ($request->has('rests')) {
                 foreach ($request->rests as $restId => $times) {
-                    if ($times['start'] && $times['end']) {
-                        // restDetails() リレーションを使って保存
+                    // start_time と end_time の両方が存在する場合のみ保存
+                    if (!empty($times['start_time']) && !empty($times['end_time'])) {
                         $correctRequest->restDetails()->create([
                             'rest_id' => $restId,
-                            'start_time' => $times['start'],
-                            'end_time' => $times['end'],
+                            'start_time' => $times['start_time'],
+                            'end_time' => $times['end_time'],
                         ]);
                     }
                 }
             }
 
-            // 5. ★新規休憩データ（B案分）の保存
-            if ($request->filled('new_rest.start') && $request->filled('new_rest.end')) {
+            // 4. 新規休憩データの保存（ここも start_time / end_time に統一）
+            if ($request->filled('new_rest.start_time') && $request->filled('new_rest.end_time')) {
                 $correctRequest->restDetails()->create([
-                    'start_time' => $request->new_rest['start'],
-                    'end_time' => $request->new_rest['end'],
-                    // rest_id は指定しない（新規のため）
+                    'start_time' => $request->new_rest['start_time'],
+                    'end_time' => $request->new_rest['end_time'],
                 ]);
             }
         });
