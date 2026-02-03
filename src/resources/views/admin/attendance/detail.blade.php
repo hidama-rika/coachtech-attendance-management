@@ -6,7 +6,7 @@
     <title>管理者-勤怠詳細画面</title>
     <link rel="stylesheet" href="{{ asset('css/sanitize.css') }}">
     <link rel="stylesheet" href="{{ asset('css/common.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/admin.detail.css')}}">
+    <link rel="stylesheet" href="{{ asset('css/admin.detail.css') }}?v={{ time() }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
@@ -85,9 +85,9 @@
                 <div class="form-group">
                     <label class="form-label">出勤・退勤</label>
                     <div class="form-row-input">
-                        <input type="text" name="check_in" class="input-field" value="{{ old('check_in', substr($attendance->check_in, 0, 5)) }}">
+                        <input type="text" name="check_in" class="input-field" value="{{ old('check_in', substr($attendance->check_in, 0, 5)) }}" onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'">
                         <span class="range-separator">～</span>
-                        <input type="text" name="check_out" class="input-field" value="{{ old('check_out', substr($attendance->check_out, 0, 5)) }}">
+                        <input type="text" name="check_out" class="input-field" value="{{ old('check_out', substr($attendance->check_out, 0, 5)) }}" onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'">
                     </div>
                 </div>
 
@@ -96,9 +96,9 @@
                 <div class="form-group">
                     <label class="form-label">休憩{{ $index + 1 }}</label>
                     <div class="form-row-input">
-                        <input type="text" name="rests[{{ $rest->id }}][start]" class="input-field" value="{{ old("rests.{$rest->id}.start", substr($rest->start_time, 0, 5)) }}">
+                        <input type="text" name="rests[{{ $rest->id }}][start]" class="input-field" value="{{ old("rests.{$rest->id}.start", substr($rest->start_time, 0, 5)) }}" onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'">
                         <span class="range-separator">～</span>
-                        <input type="text" name="rests[{{ $rest->id }}][end]" class="input-field" value="{{ old("rests.{$rest->id}.end", substr($rest->end_time, 0, 5)) }}">
+                        <input type="text" name="rests[{{ $rest->id }}][end]" class="input-field" value="{{ old("rests.{$rest->id}.end", substr($rest->end_time, 0, 5)) }}" onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'">
                     </div>
                 </div>
                 @endforeach
@@ -107,9 +107,9 @@
                 <div class="form-group">
                     <label class="form-label">休憩{{ $attendance->rests->count() + 1 }}</label>
                     <div class="form-row-input">
-                        <input type="text" name="new_rest[start]" class="input-field" value="{{ old('new_rest.start') }}">
+                        <input type="text" name="new_rest[start]" class="input-field" value="{{ old('new_rest.start') }}" onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'">
                         <span class="range-separator">～</span>
-                        <input type="text" name="new_rest[end]" class="input-field" value="{{ old('new_rest.end') }}">
+                        <input type="text" name="new_rest[end]" class="input-field" value="{{ old('new_rest.end') }}" onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'">
                     </div>
                 </div>
 
