@@ -22,11 +22,14 @@ class RequestController extends Controller
         $user = Auth::user();
 
         // 自分の申請を取得（リレーションで勤怠日などを表示）
-        $pendingRequests = $user->attendanceCorrectRequests()
-            ->where('status', 'pending')->with('attendance')->get();
 
+        // ✅ 承認待ち (1) のデータを取得
+        $pendingRequests = $user->attendanceCorrectRequests()
+            ->where('status', AttendanceCorrectRequest::STATUS_PENDING)->with('attendance')->get();
+
+        // ✅ 承認済み (2) のデータを取得
         $approvedRequests = $user->attendanceCorrectRequests()
-            ->where('status', 'approved')->with('attendance')->get();
+            ->where('status', AttendanceCorrectRequest::STATUS_APPROVED)->with('attendance')->get();
 
         return view('request.list', compact('pendingRequests', 'approvedRequests'));
     }
@@ -44,7 +47,8 @@ class RequestController extends Controller
             $correctRequest = AttendanceCorrectRequest::create([
                 'user_id' => $user->id,
                 'attendance_id' => $id,
-                'status' => 'pending',
+                'status' => AttendanceCorrectRequest::STATUS_PENDING, // ❗ ここで定数を使う
+                'reason' => $request->remark, // 備考を申請理由として保存する
             ]);
 
             // 2. ★【重要】勤怠詳細（出退勤・備考）の保存を追加
@@ -87,10 +91,10 @@ class RequestController extends Controller
     {
         // 全ユーザーの申請をステータス別に表示
         $pendingRequests = AttendanceCorrectRequest::with(['user', 'attendance'])
-            ->where('status', 'pending')->get();
+            ->where('status', AttendanceCorrectRequest::STATUS_PENDING)->get();
 
         $approvedRequests = AttendanceCorrectRequest::with(['user', 'attendance'])
-            ->where('status', 'approved')->get();
+            ->where('status', AttendanceCorrectRequest::STATUS_APPROVED)->get();
 
         return view('admin.request.list', compact('pendingRequests', 'approvedRequests'));
     }
@@ -141,7 +145,7 @@ class RequestController extends Controller
             }
 
             // 3. 申請ステータスを"承認済み"に変更
-            $request->update(['status' => 'approved']);
+            $request->update(['status' => AttendanceCorrectRequest::STATUS_APPROVED]);
         });
 
         return redirect()->route('admin.request.list')->with('message', '承認しました');
