@@ -96,9 +96,9 @@
                 <div class="form-group">
                     <label class="form-label">休憩{{ $index + 1 }}</label>
                     <div class="form-row-input">
-                        <input type="text" name="rests[{{ $rest->id }}][start]" class="input-field" value="{{ old("rests.{$rest->id}.start", substr($rest->start_time, 0, 5)) }}" onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'">
+                        <input type="text" name="rests[{{ $rest->id }}][start_time]" class="input-field" value="{{ old("rests.{$rest->id}.start", substr($rest->start_time, 0, 5)) }}" onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'">
                         <span class="range-separator">～</span>
-                        <input type="text" name="rests[{{ $rest->id }}][end]" class="input-field" value="{{ old("rests.{$rest->id}.end", substr($rest->end_time, 0, 5)) }}" onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'">
+                        <input type="text" name="rests[{{ $rest->id }}][end_time]" class="input-field" value="{{ old("rests.{$rest->id}.end", substr($rest->end_time, 0, 5)) }}" onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'">
                     </div>
                 </div>
                 @endforeach

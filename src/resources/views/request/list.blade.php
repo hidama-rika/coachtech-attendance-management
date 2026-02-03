@@ -80,7 +80,7 @@
                         @forelse($displayRequests as $request)
                         <tr>
                             <td class="text-center">
-                            {{ $request->status == 'pending' ? '承認待ち' : '承認済み' }}
+                                {{ $request->status == \App\Models\AttendanceCorrectRequest::STATUS_PENDING ? '承認待ち' : '承認済み' }}
                             </td>
                             {{-- スタッフ本人の名前を表示 --}}
                             <td class="text-center">{{ $request->user->name }}</td>

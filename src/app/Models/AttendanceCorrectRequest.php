@@ -9,7 +9,10 @@ class AttendanceCorrectRequest extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'attendance_id', 'status'];
+    protected $fillable = ['user_id', 'attendance_id', 'status', 'reason'];
+
+    const STATUS_PENDING = 1;
+    const STATUS_APPROVED = 2;
 
     // 申請をしたユーザー
     public function user()
