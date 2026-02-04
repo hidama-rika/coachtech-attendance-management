@@ -54,9 +54,9 @@
             {{-- 承認状態タブ --}}
             <div class="status-tabs">
                 {{-- クエリパラメータ 'tab' が 'approved' でなければ『承認待ち』をアクティブにする --}}
-                <a href="{{ route('admin.request.list', ['tab' => 'pending']) }}" class="tab-item {{ request('tab') != 'approved' ? 'active' : '' }}">承認待ち</a>
+                <a href="{{ route('request.list', ['tab' => 'pending']) }}" class="tab-item {{ request('tab') != 'approved' ? 'active' : '' }}">承認待ち</a>
 
-                <a href="{{ route('admin.request.list', ['tab' => 'approved']) }}" class="tab-item {{ request('tab') == 'approved' ? 'active' : '' }}">承認済み</a>
+                <a href="{{ route('request.list', ['tab' => 'approved']) }}" class="tab-item {{ request('tab') == 'approved' ? 'active' : '' }}">承認済み</a>
             </div>
 
             {{-- 申請一覧テーブル --}}
