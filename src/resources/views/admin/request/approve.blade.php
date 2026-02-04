@@ -53,7 +53,7 @@
 
             {{-- 勤怠詳細テーブル --}}
             {{-- 承認処理（RequestController の approve メソッドへ送信） --}}
-            <form action="{{ route('admin.request.approve', ['id' => $request->id]) }}" method="POST" class="attendance-form">
+            <form action="{{ route('admin.request.approve', ['attendance_correct_request_id' => $request->id]) }}" method="POST" class="attendance-form">
                 @csrf
                 {{-- 名前 --}}
                 <div class="form-group">
@@ -107,7 +107,7 @@
                 <div class="form-button-area">
                     {{-- ステータスが pending の場合のみボタンを表示 --}}
                     {{-- 未承認：通常の承認ボタン --}}
-                    @if($request->status == 'pending')
+                    @if($request->status == \App\Models\AttendanceCorrectRequest::STATUS_PENDING)
                         <button type="submit" class="submit-button">承認</button>
                     @else
                         {{-- 承認済み：CSSクラス .approved-button を適用 --}}
