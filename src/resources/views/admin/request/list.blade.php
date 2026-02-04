@@ -81,7 +81,7 @@
                         @forelse($displayRequests as $request)
                         <tr>
                             <td class="text-center">
-                                {{ $request->status == 'pending' ? '承認待ち' : '承認済み' }}
+                                {{ $request->status == \App\Models\AttendanceCorrectRequest::STATUS_PENDING ? '承認待ち' : '承認済み' }}
                             </td>
                             <td class="text-center">{{ $request->user->name }}</td>
                             <td class="text-center">
@@ -96,7 +96,7 @@
                             </td>
                             <td class="text-center">
                                 {{-- 管理者用の詳細承認画面へリンク --}}
-                                <a href="{{ route('admin.request.show', ['id' => $request->id]) }}" class="detail-link">詳細</a>
+                                <a href="{{ route('admin.request.show', ['attendance_correct_request_id' => $request->id]) }}" class="detail-link">詳細</a>
                             </td>
                         </tr>
                         @empty
