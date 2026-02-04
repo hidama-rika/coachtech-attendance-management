@@ -85,9 +85,15 @@
                 <div class="form-group">
                     <label class="form-label">出勤・退勤</label>
                     <div class="form-row-input">
-                        <input type="text" name="check_in" class="input-field" value="{{ old('check_in', substr($attendance->check_in, 0, 5)) }}" onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'">
+                        @php
+                            // 承認待ちなら申請データを、そうでなければ元の勤怠データを参照する
+                            $displayCheckIn = $isPending ? substr($pendingRequest->correctionAttendanceDetail->check_in, 0, 5) : substr($attendance->check_in, 0, 5);
+                            $displayCheckOut = $isPending ? substr($pendingRequest->correctionAttendanceDetail->check_out, 0, 5) : substr($attendance->check_out, 0, 5);
+                        @endphp
+
+                        <input type="text" name="check_in" class="input-field @if($isPending) is-pending @endif" value="{{ old('check_in', $displayCheckIn) }}" @if($isPending) readonly @else onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'" @endif>
                         <span class="range-separator">～</span>
-                        <input type="text" name="check_out" class="input-field" value="{{ old('check_out', substr($attendance->check_out, 0, 5)) }}" onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'">
+                        <input type="text" name="check_out" class="input-field @if($isPending) is-pending @endif" value="{{ old('check_out', $displayCheckOut) }}" @if($isPending) readonly @else onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'" @endif>
                     </div>
                 </div>
 
@@ -96,9 +102,16 @@
                 <div class="form-group">
                     <label class="form-label">休憩{{ $index + 1 }}</label>
                     <div class="form-row-input">
-                        <input type="text" name="rests[{{ $rest->id }}][start_time]" class="input-field" value="{{ old("rests.{$rest->id}.start", substr($rest->start_time, 0, 5)) }}" onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'">
+                        @php
+                            // 承認待ちなら申請詳細(restDetails)からこの休憩IDに一致する値を探す
+                            $pendingRest = $isPending ? $pendingRequest->restDetails->where('rest_id', $rest->id)->first() : null;
+                            $displayStart = $pendingRest ? substr($pendingRest->start_time, 0, 5) : substr($rest->start_time, 0, 5);
+                            $displayEnd = $pendingRest ? substr($pendingRest->end_time, 0, 5) : substr($rest->end_time, 0, 5);
+                        @endphp
+
+                        <input type="text" name="rests[{{ $rest->id }}][start_time]" class="input-field @if($isPending) is-pending @endif" value="{{ old("rests.{$rest->id}.start", $displayStart) }}" @if($isPending) readonly @else onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'" @endif>
                         <span class="range-separator">～</span>
-                        <input type="text" name="rests[{{ $rest->id }}][end_time]" class="input-field" value="{{ old("rests.{$rest->id}.end", substr($rest->end_time, 0, 5)) }}" onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'">
+                        <input type="text" name="rests[{{ $rest->id }}][end_time]" class="input-field @if($isPending) is-pending @endif" value="{{ old("rests.{$rest->id}.end", $displayEnd) }}" @if($isPending) readonly @else onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'" @endif>
                     </div>
                 </div>
                 @endforeach
@@ -108,21 +121,29 @@
                     <label class="form-label">休憩{{ $attendance->rests->count() + 1 }}</label>
                     <div class="form-row-input">
                         {{-- コントローラーの update メソッドと合わせるため、name属性を new_rest に設定 --}}
-                        <input type="text" name="new_rest[start]" class="input-field" value="{{ old('new_rest.start') }}" onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'">
+                        <input type="text" name="new_rest[start]" class="input-field @if($isPending) is-pending @endif" value="{{ old('new_rest.start') }}" @if($isPending) readonly @else onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'" @endif>
                         <span class="range-separator">～</span>
-                        <input type="text" name="new_rest[end]" class="input-field" value="{{ old('new_rest.end') }}" onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'">
+                        <input type="text" name="new_rest[end]" class="input-field @if($isPending) is-pending @endif" value="{{ old('new_rest.end') }}" @if($isPending) readonly @else onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'" @endif>
                     </div>
                 </div>
 
                 {{-- 備考 --}}
                 <div class="form-group">
                     <label class="form-label">備考</label>
-                    <textarea name="remark" class="textarea-field">{{ old('remark') }}</textarea>
+                    <textarea name="remark" class="textarea-field @if($isPending) is-pending @endif" @if($isPending) readonly @endif>{{ old('remark') }}</textarea>
                 </div>
 
                 {{-- 修正ボタン (FN028: 修正申請を出す) --}}
                 <div class="form-button-area">
-                    <button type="submit" class="submit-button">修正</button>
+                    @if($isPending)
+                        {{-- 承認待ちの場合：メッセージのみ表示 (FN033) --}}
+                        <p class="pending-message">
+                            ＊承認待ちのため修正はできません。
+                        </p>
+                    @else
+                        {{-- 通常時：修正ボタンを表示 --}}
+                        <button type="submit" class="submit-button">修正</button>
+                    @endif
                 </div>
             </form>
         </div>

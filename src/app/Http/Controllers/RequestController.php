@@ -148,6 +148,6 @@ class RequestController extends Controller
             $request->update(['status' => AttendanceCorrectRequest::STATUS_APPROVED]);
         });
 
-        return redirect()->route('admin.request.list')->with('message', '承認しました');
+        return redirect()->route('request.list')->with('message', '承認しました');
     }
 }
