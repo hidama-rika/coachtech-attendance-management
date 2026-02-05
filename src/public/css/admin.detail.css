@@ -122,7 +122,7 @@ body {
 
 /* ❗ 入力フィールド自体の基本スタイル */
 .input-field {
-    width: 120px;
+    width: 110px;
     height: 35px;
     border: 1px solid #CCCCCC;
     border-radius: 4px;
@@ -131,6 +131,7 @@ body {
     font-weight: 700;
     text-align: center;
     /* 基本の中央揃え */
+    margin-left: 20px;
 
     /* ❗ ここを追加：Flexboxで内部要素を中央に集める */
     display: inline-flex;
@@ -178,20 +179,24 @@ input[type="time"]::-webkit-datetime-edit-fields-wrapper {
 
 /* --- 備考（textarea） --- */
 .textarea-field {
-    width: 340px;
+    font-family: 'Inter', 'sans-serif';
+    font-weight: 700;
+    width: 430px;
     /* ❗ 横幅を画像に合わせて拡大 */
-    height: 100px;
+    height: 70px;
     border: 1px solid #CCCCCC;
     border-radius: 4px;
     resize: none;
     font-size: 1rem;
     display: block;
-    margin-right: 225px;
+    margin-left: 70px;
+    margin-right: 190px;
 }
 
 .range-separator {
     font-size: 20px;
     font-weight: bold;
+    margin-left: 20px;
 }
 
 /* 修正ボタン */
@@ -216,6 +221,80 @@ input[type="time"]::-webkit-datetime-edit-fields-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+/* ======================================================================
+    1. 管理者側 (.admin-page) 専用：レイアウト崩れ防止
+   ====================================================================== */
+
+/* ユーザーの名前・備考などの位置を強制的に再固定 */
+.admin-page .form-text,
+.admin-page .form-row-input,
+.admin-page .textarea-field {
+    margin-left: 100px;
+    /* 他のラベルとの間隔を100pxで統一 */
+}
+
+.admin-page .name-display {
+    margin-left: 150px;
+}
+
+.admin-page .form-row-date {
+    margin-left: 150px;
+    gap: 195px;
+}
+
+/* 管理者の備考フォームの枠線を確実に表示 */
+.admin-page .textarea-field {
+    border: 1px solid #CCCCCC;
+    background-color: #FFFFFF;
+    width: 400px;
+    /* 横幅を固定 */
+    height: 100px;
+    margin-left: 120px;
+    margin-right: 230px;
+    display: block;
+}
+
+/* ======================================================================
+    2. スタッフ側 (.staff-page) かつ 承認待ち (.is-pending) 限定
+   ====================================================================== */
+
+/* ユーザーの名前・備考などの位置を強制的に再固定 */
+.staff-page .form-text,
+.staff-page .form-row-input,
+.staff-page .textarea-field {
+    margin-left: 100px;
+    /* 他のラベルとの間隔を100pxで統一 */
+}
+
+.staff-page .name-display {
+    margin-left: 150px;
+}
+
+.staff-page .form-row-date {
+    margin-left: 150px;
+    gap: 195px;
+}
+
+   /* 承認待ちの時のみ枠を消す（管理者側には影響させない） */
+.staff-page .input-field.is-pending,
+.staff-page .textarea-field.is-pending {
+    border: none;
+    border-width: 0;
+    background-color: transparent;
+    box-shadow: none;
+    outline: none;
+    cursor: default;
+    padding: 0;
+}
+
+.staff-page .textarea-field {
+    line-height: 70px;
+    margin-left: 120px;
+    display: block;
+    text-align: left;
+    overflow: hidden;
 }
 
 /* --- エラーメッセージ表示エリア (FN039) --- */
@@ -302,7 +381,6 @@ input[type="time"]::-webkit-datetime-edit-fields-wrapper {
     justify-content: center;
     align-items: center;
     text-align: center;
-    /* その他基本スタイル */
 }
 
 /* Shadow DOM の指定も、親クラスを含めて記述 */

@@ -47,7 +47,7 @@
         </div>
     </header>
 
-    <main class="container">
+    <main class="container staff-page"> {{-- 管理者と一般ユーザーで表示切替 --}}
         <div class="form-container">
             <h1 class="page-title">勤怠詳細</h1>
 
@@ -130,7 +130,11 @@
                 {{-- 備考 --}}
                 <div class="form-group">
                     <label class="form-label">備考</label>
-                    <textarea name="remark" class="textarea-field @if($isPending) is-pending @endif" @if($isPending) readonly @endif>{{ old('remark') }}</textarea>
+                    @php
+                        // 承認待ちなら申請詳細テーブルのremark、そうでなければ現在の勤怠のremarkを表示
+                        $displayRemark = $isPending ? $pendingRequest->correctionAttendanceDetail->remark : $attendance->remark;
+                    @endphp
+                    <textarea name="remark" class="textarea-field @if($isPending) is-pending @endif" @if($isPending) readonly @endif>{{ old('remark', $displayRemark) }}</textarea>
                 </div>
 
                 {{-- 修正ボタン (FN028: 修正申請を出す) --}}
