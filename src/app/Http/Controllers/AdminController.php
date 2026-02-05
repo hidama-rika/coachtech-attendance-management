@@ -69,12 +69,15 @@ class AdminController extends Controller
     /**
      * 【FN037, FN038】管理者用：勤怠詳細画面の表示
      */
-    public function showDetail($id)
+    public function showDetail(Request $request, $id) // Request を追加
     {
-        // 指定された勤怠データを取得（休憩データも含む）
-        $attendance = Attendance::with(['user', 'rests'])->findOrFail($id);
+        // findOrFail ではなく find にして、データがなくても落ちないようにする
+        $attendance = Attendance::with(['user', 'rests'])->find($id);
 
-        return view('admin.attendance.detail', compact('attendance'));
+        // データがない場合、URLから日付を取得、それもなければ今日にする
+        $displayDate = $attendance ? $attendance->date : $request->query('date', now()->toDateString());
+
+        return view('admin.attendance.detail', compact('attendance', 'displayDate'));
     }
 
     /**
