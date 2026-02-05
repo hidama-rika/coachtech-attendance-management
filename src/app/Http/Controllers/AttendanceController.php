@@ -177,14 +177,19 @@ class AttendanceController extends Controller
     public function showDetail($id)
     {
         $user = Auth::user();
-        // 指定された勤怠データを取得（リレーションで休憩データもロード）
+        // Attendanceはシンプルに取得
         $attendance = Attendance::with('rests')->findOrFail($id);
 
         // すでに「承認待ち」の申請があるか確認 (FN027)
-        $isPending = AttendanceCorrectRequest::where('attendance_id', $id)
-            ->where('status', 'pending')
-            ->exists();
+        // ✅ 承認待ちの申請データを「申請モデル」経由で直接取得する
+        $pendingRequest = AttendanceCorrectRequest::with(['correctionAttendanceDetail', 'restDetails'])
+            ->where('attendance_id', $id)
+            ->where('status', AttendanceCorrectRequest::STATUS_PENDING)
+            ->first();
 
-        return view('attendance.detail', compact('attendance', 'user', 'isPending'));
+        $isPending = !is_null($pendingRequest);
+
+        // Bladeに $pendingRequest も渡す
+        return view('attendance.detail', compact('attendance', 'user', 'isPending', 'pendingRequest'));
     }
 }

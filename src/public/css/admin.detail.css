@@ -331,3 +331,35 @@ input[type="time"]::-webkit-datetime-edit-fields-wrapper {
     display: flex;
     justify-content: center;
 }
+
+/* --- 承認待ち(is-pending)時のスタイル --- */
+
+/* 1. 全ての入力フィールドとテキストエリアの枠を消す */
+.form-container .input-field.is-pending,
+.form-container .textarea-field.is-pending,
+.form-row-input .input-field.is-pending {
+    border: none;
+    border-width: 0;
+    background-color: transparent;
+    box-shadow: none;
+    outline: none;
+    cursor: default;
+    padding: 0;
+}
+
+/* 2. 赤文字メッセージをデザインに合わせる（画像通り右寄せ） */
+.pending-message {
+    color: #ff0000;
+    /* font-weight: 800; */
+    font-size: 1.125rem;
+    text-align: right;
+    /* ✅ 右寄せ */
+    width: 100%;
+    margin-top: 5px;
+}
+
+/* 3. 承認待ちの時はマウスを乗せても指マークにならないようにする */
+.input-field.is-pending:hover,
+.textarea-field.is-pending:hover {
+    background-color: transparent;
+}
