@@ -47,7 +47,7 @@
         </div>
     </header>
 
-    <main class="container">
+    <main class="container admin-page">{{-- 管理者と一般ユーザーで表示切替 --}}
         <div class="form-container">
             <h1 class="page-title">勤怠詳細</h1>
 
