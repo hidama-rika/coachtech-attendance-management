@@ -1,4 +1,5 @@
 body {
+    background-color: #F0EFF2;
     margin: 0;
     font-family: 'Inter', 'sans-serif';
     font-weight: 700;
@@ -101,7 +102,7 @@ body {
 
 /* 姓名の間隔 */
 .name-display {
-    margin-left: 120px;
+    /* margin-left: 100px; */
     gap: 30px;
 }
 
@@ -109,7 +110,7 @@ body {
 .form-row-date {
     display: flex;
     gap: 160px;
-    margin-left: 130px;
+    /* margin-left: 130px; */
 }
 
 /* --- 入力フィールド（出勤・退勤・休憩） --- */
@@ -181,7 +182,7 @@ input[type="time"]::-webkit-datetime-edit-fields-wrapper {
 .textarea-field {
     font-family: 'Inter', 'sans-serif';
     font-weight: 700;
-    width: 430px;
+    width: 370px;
     /* ❗ 横幅を画像に合わせて拡大 */
     height: 70px;
     border: 1px solid #CCCCCC;
@@ -190,7 +191,7 @@ input[type="time"]::-webkit-datetime-edit-fields-wrapper {
     font-size: 1rem;
     display: block;
     margin-left: 70px;
-    margin-right: 190px;
+    margin-right: 200px;
 }
 
 .range-separator {
@@ -202,6 +203,7 @@ input[type="time"]::-webkit-datetime-edit-fields-wrapper {
 /* 修正ボタン */
 .form-button-area {
     margin-top: 40px;
+    margin-bottom: 40px;
     display: flex;
     justify-content: flex-end;
     /* 右寄せ */
@@ -224,36 +226,40 @@ input[type="time"]::-webkit-datetime-edit-fields-wrapper {
 }
 
 /* ======================================================================
-    1. 管理者側 (.admin-page) 専用：レイアウト崩れ防止
+    1. 管理者側 (.admin-page) 専用：詳細度を高めて上書き
    ====================================================================== */
 
-/* ユーザーの名前・備考などの位置を強制的に再固定 */
-.admin-page .form-text,
-.admin-page .form-row-input,
-.admin-page .textarea-field {
-    margin-left: 100px;
-    /* 他のラベルとの間隔を100pxで統一 */
+/* 150pxのラインで揃えるための指定 */
+/* main.admin-page のように親要素を重ねることで詳細度を上げ、!importantを回避します */
+.admin-page .form-group .form-row-input {
+    margin-left: 130px;
 }
 
-.admin-page .name-display {
-    margin-left: 150px;
+.admin-page .name-display,
+main.admin-page .form-row-date {
+    margin-left: 180px;
 }
 
-.admin-page .form-row-date {
-    margin-left: 150px;
+/* 日付の間隔 */
+main.admin-page .form-row-date {
     gap: 195px;
 }
 
-/* 管理者の備考フォームの枠線を確実に表示 */
-.admin-page .textarea-field {
+/* 備考フォーム：枠線・背景・文字位置の修正 */
+/* クラスを2つ重ねることで、ベースの .textarea-field 設定を自然に上書きします */
+.admin-page textarea.textarea-field {
+    width: 380px;
+    height: 100px;
     border: 1px solid #CCCCCC;
     background-color: #FFFFFF;
-    width: 400px;
-    /* 横幅を固定 */
-    height: 100px;
-    margin-left: 120px;
-    margin-right: 230px;
+    margin-left: 150px;
+
+    /* 文字位置のズレ（下ズレ）を解消するリセット */
+    line-height: 1.5;
+    padding: 10px;
     display: block;
+    text-align: left;
+    overflow-y: auto;
 }
 
 /* ======================================================================

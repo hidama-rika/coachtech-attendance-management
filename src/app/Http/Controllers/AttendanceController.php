@@ -174,14 +174,17 @@ class AttendanceController extends Controller
     /**
      * 勤怠詳細画面（修正申請フォーム）の表示 (FN026, FN027)
      */
-    public function showDetail($id)
+    public function showDetail(Request $request, $id) // Request を引数に追加！
     {
         $user = Auth::user();
-        // Attendanceはシンプルに取得
-        $attendance = Attendance::with('rests')->findOrFail($id);
+        // findOrFail ではなく find にして、データがなくても落ちないようにする
+        $attendance = Attendance::with('rests')->find($id);
+
+        // データがない場合、URLのクエリパラメータから日付を取得する（例: ?date=2026-02-01）
+        $displayDate = $attendance ? $attendance->date : $request->query('date', now()->toDateString());
 
         // すでに「承認待ち」の申請があるか確認 (FN027)
-        // ✅ 承認待ちの申請データを「申請モデル」経由で直接取得する
+        // 承認待ちの申請データを「申請モデル」経由で直接取得する
         $pendingRequest = AttendanceCorrectRequest::with(['correctionAttendanceDetail', 'restDetails'])
             ->where('attendance_id', $id)
             ->where('status', AttendanceCorrectRequest::STATUS_PENDING)
@@ -190,6 +193,6 @@ class AttendanceController extends Controller
         $isPending = !is_null($pendingRequest);
 
         // Bladeに $pendingRequest も渡す
-        return view('attendance.detail', compact('attendance', 'user', 'isPending', 'pendingRequest'));
+        return view('attendance.detail', compact('attendance', 'user', 'isPending', 'pendingRequest', 'displayDate', 'request'));
     }
 }

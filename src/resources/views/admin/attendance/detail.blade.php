@@ -52,7 +52,7 @@
             <h1 class="page-title">勤怠詳細</h1>
 
             {{-- 勤怠詳細テーブル --}}
-            <form action="{{ route('admin.attendance.update', ['id' => $attendance->id]) }}" method="POST" class="attendance-form">
+            <form action="{{ $attendance ? route('admin.attendance.update', ['id' => $attendance->id]) : '#' }}" method="POST" class="attendance-form">
                 @csrf
 
                 {{-- バリデーションエラーの表示 (FN039) --}}
@@ -68,7 +68,7 @@
                 <div class="form-group">
                     <label class="form-label">名前</label>
                     <div class="form-text name-display">
-                        <span>{{ $attendance->user->name }}</span>
+                        <span>{{ $attendance ? $attendance->user->name : ''}}</span>
                     </div>
                 </div>
 
@@ -76,8 +76,8 @@
                 <div class="form-group">
                     <label class="form-label">日付</label>
                     <div class="form-row-date">
-                        <span class="date-unit">{{ \Carbon\Carbon::parse($attendance->date)->format('Y年') }}</span>
-                        <span class="date-unit">{{ \Carbon\Carbon::parse($attendance->date)->format('n月j日') }}</span>
+                        <span class="date-unit">{{ \Carbon\Carbon::parse($displayDate)->format('Y年') }}</span>
+                        <span class="date-unit">{{ \Carbon\Carbon::parse($displayDate)->format('n月j日') }}</span>
                     </div>
                 </div>
 
@@ -85,27 +85,34 @@
                 <div class="form-group">
                     <label class="form-label">出勤・退勤</label>
                     <div class="form-row-input">
-                        <input type="text" name="check_in" class="input-field" value="{{ old('check_in', substr($attendance->check_in, 0, 5)) }}" onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'">
+                        @php
+                            $valCheckIn = $attendance ? substr($attendance->check_in, 0, 5) : '';
+                            $valCheckOut = $attendance ? substr($attendance->check_out, 0, 5) : '';
+                        @endphp
+                        <input type="text" name="check_in" class="input-field" value="{{ old('check_in', $valCheckIn) }}" onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'">
                         <span class="range-separator">～</span>
-                        <input type="text" name="check_out" class="input-field" value="{{ old('check_out', substr($attendance->check_out, 0, 5)) }}" onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'">
+                        <input type="text" name="check_out" class="input-field" value="{{ old('check_out', $valCheckOut) }}" onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'">
                     </div>
                 </div>
 
                 {{-- 休憩：保存済みデータのループ --}}
-                @foreach($attendance->rests as $index => $rest)
-                <div class="form-group">
-                    <label class="form-label">休憩{{ $index + 1 }}</label>
-                    <div class="form-row-input">
-                        <input type="text" name="rests[{{ $rest->id }}][start]" class="input-field" value="{{ old("rests.{$rest->id}.start", substr($rest->start_time, 0, 5)) }}" onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'">
-                        <span class="range-separator">～</span>
-                        <input type="text" name="rests[{{ $rest->id }}][end]" class="input-field" value="{{ old("rests.{$rest->id}.end", substr($rest->end_time, 0, 5)) }}" onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'">
+                @if($attendance)
+                    @foreach($attendance->rests as $index => $rest)
+                    <div class="form-group">
+                        <label class="form-label">休憩{{ $index + 1 }}</label>
+                        <div class="form-row-input">
+                            <input type="text" name="rests[{{ $rest->id }}][start]" class="input-field" value="{{ old("rests.{$rest->id}.start", substr($rest->start_time, 0, 5)) }}" onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'">
+                            <span class="range-separator">～</span>
+                            <input type="text" name="rests[{{ $rest->id }}][end]" class="input-field" value="{{ old("rests.{$rest->id}.end", substr($rest->end_time, 0, 5)) }}" onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'">
+                        </div>
                     </div>
-                </div>
-                @endforeach
+                    @endforeach
+                @endif
 
                 {{-- 【B案】動的に増える新規枠（コーチ確認用） --}}
                 <div class="form-group">
-                    <label class="form-label">休憩{{ $attendance->rests->count() + 1 }}</label>
+                    {{-- ラベルと入力欄の親要素は他と同じ構造にする --}}
+                    <label class="form-label">休憩{{ $attendance ? $attendance->rests->count() + 1 : 1 }}</label>
                     <div class="form-row-input">
                         <input type="text" name="new_rest[start]" class="input-field" value="{{ old('new_rest.start') }}" onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'">
                         <span class="range-separator">～</span>
@@ -116,7 +123,7 @@
                 {{-- 備考：name属性を追加 --}}
                 <div class="form-group">
                     <label class="form-label">備考</label>
-                    <textarea name="remark" class="textarea-field">{{ old('remark', $attendance->remark) }}</textarea>
+                    <textarea name="remark" class="textarea-field">{{ old('remark', ($attendance ? $attendance->remark : '')) }}</textarea>
                 </div>
 
                 {{-- 修正ボタン (FN040: 勤怠更新処理)--}}

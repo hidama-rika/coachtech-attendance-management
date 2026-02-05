@@ -52,7 +52,8 @@
             <h1 class="page-title">勤怠詳細</h1>
 
             {{-- 勤怠詳細テーブル --}}
-            <form action="{{ route('attendance.update', ['id' => $attendance->id]) }}" method="POST" class="attendance-form">
+            {{-- $attendance がある時だけ ID を読み、なければ null にする --}}
+            <form action="{{ $attendance ? route('attendance.update', ['id' => $attendance->id]) : '#' }}" method="POST" class="attendance-form">
                 @csrf
 
                 {{-- バリデーションエラーの表示エリアを追加 (FN030) --}}
@@ -68,7 +69,8 @@
                 <div class="form-group">
                     <label class="form-label">名前</label>
                     <div class="form-text name-display">
-                        <span>{{ $attendance->user->name }}</span>
+                        {{-- ログインユーザー $user を直接使う（Controllerで渡してる） --}}
+                        <span>{{ $user->name }}</span>
                     </div>
                 </div>
 
@@ -76,8 +78,8 @@
                 <div class="form-group">
                     <label class="form-label">日付</label>
                     <div class="form-row-date">
-                        <span class="date-unit">{{ \Carbon\Carbon::parse($attendance->date)->format('Y年') }}</span>
-                        <span class="date-unit">{{ \Carbon\Carbon::parse($attendance->date)->format('n月j日') }}</span>
+                        <span class="date-unit">{{ \Carbon\Carbon::parse($displayDate)->format('Y年') }}</span>
+                        <span class="date-unit">{{ \Carbon\Carbon::parse($displayDate)->format('n月j日') }}</span>
                     </div>
                 </div>
 
@@ -86,9 +88,14 @@
                     <label class="form-label">出勤・退勤</label>
                     <div class="form-row-input">
                         @php
-                            // 承認待ちなら申請データを、そうでなければ元の勤怠データを参照する
-                            $displayCheckIn = $isPending ? substr($pendingRequest->correctionAttendanceDetail->check_in, 0, 5) : substr($attendance->check_in, 0, 5);
-                            $displayCheckOut = $isPending ? substr($pendingRequest->correctionAttendanceDetail->check_out, 0, 5) : substr($attendance->check_out, 0, 5);
+                            if ($isPending) {
+                                $displayCheckIn = substr($pendingRequest->correctionAttendanceDetail->check_in, 0, 5);
+                                $displayCheckOut = substr($pendingRequest->correctionAttendanceDetail->check_out, 0, 5);
+                            } else {
+                                // ✅ $attendance が null なら空文字にする
+                                $displayCheckIn = $attendance ? substr($attendance->check_in, 0, 5) : '';
+                                $displayCheckOut = $attendance ? substr($attendance->check_out, 0, 5) : '';
+                            }
                         @endphp
 
                         <input type="text" name="check_in" class="input-field @if($isPending) is-pending @endif" value="{{ old('check_in', $displayCheckIn) }}" @if($isPending) readonly @else onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'" @endif>
@@ -98,27 +105,30 @@
                 </div>
 
                 {{-- 休憩：保存されている回数分だけループ表示 (FN021対応) --}}
-                @foreach($attendance->rests as $index => $rest)
-                <div class="form-group">
-                    <label class="form-label">休憩{{ $index + 1 }}</label>
-                    <div class="form-row-input">
-                        @php
-                            // 承認待ちなら申請詳細(restDetails)からこの休憩IDに一致する値を探す
-                            $pendingRest = $isPending ? $pendingRequest->restDetails->where('rest_id', $rest->id)->first() : null;
-                            $displayStart = $pendingRest ? substr($pendingRest->start_time, 0, 5) : substr($rest->start_time, 0, 5);
-                            $displayEnd = $pendingRest ? substr($pendingRest->end_time, 0, 5) : substr($rest->end_time, 0, 5);
-                        @endphp
+                @if($attendance) {{-- 勤怠データがある時だけ既存休憩を表示 --}}
+                    @foreach($attendance->rests as $index => $rest)
+                    <div class="form-group">
+                        <label class="form-label">休憩{{ $index + 1 }}</label>
+                        <div class="form-row-input">
+                            @php
+                                // 承認待ちなら申請詳細(restDetails)からこの休憩IDに一致する値を探す
+                                $pendingRest = $isPending ? $pendingRequest->restDetails->where('rest_id', $rest->id)->first() : null;
+                                $displayStart = $pendingRest ? substr($pendingRest->start_time, 0, 5) : substr($rest->start_time, 0, 5);
+                                $displayEnd = $pendingRest ? substr($pendingRest->end_time, 0, 5) : substr($rest->end_time, 0, 5);
+                            @endphp
 
-                        <input type="text" name="rests[{{ $rest->id }}][start_time]" class="input-field @if($isPending) is-pending @endif" value="{{ old("rests.{$rest->id}.start", $displayStart) }}" @if($isPending) readonly @else onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'" @endif>
-                        <span class="range-separator">～</span>
-                        <input type="text" name="rests[{{ $rest->id }}][end_time]" class="input-field @if($isPending) is-pending @endif" value="{{ old("rests.{$rest->id}.end", $displayEnd) }}" @if($isPending) readonly @else onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'" @endif>
+                            <input type="text" name="rests[{{ $rest->id }}][start_time]" class="input-field @if($isPending) is-pending @endif" value="{{ old("rests.{$rest->id}.start", $displayStart) }}" @if($isPending) readonly @else onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'" @endif>
+                            <span class="range-separator">～</span>
+                            <input type="text" name="rests[{{ $rest->id }}][end_time]" class="input-field @if($isPending) is-pending @endif" value="{{ old("rests.{$rest->id}.end", $displayEnd) }}" @if($isPending) readonly @else onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'" @endif>
+                        </div>
                     </div>
-                </div>
-                @endforeach
+                    @endforeach
+                @endif
 
                 {{-- 2. 動的に増える新規枠。常に末尾に1つ「新規入力用」を表示する --}}
                 <div class="form-group">
-                    <label class="form-label">休憩{{ $attendance->rests->count() + 1 }}</label>
+                    {{-- $attendance がなければ「休憩1」にする --}}
+                    <label class="form-label">休憩{{ $attendance ? $attendance->rests->count() + 1 : 1 }}</label>
                     <div class="form-row-input">
                         {{-- コントローラーの update メソッドと合わせるため、name属性を new_rest に設定 --}}
                         <input type="text" name="new_rest[start]" class="input-field @if($isPending) is-pending @endif" value="{{ old('new_rest.start') }}" @if($isPending) readonly @else onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'" @endif>
@@ -131,8 +141,8 @@
                 <div class="form-group">
                     <label class="form-label">備考</label>
                     @php
-                        // 承認待ちなら申請詳細テーブルのremark、そうでなければ現在の勤怠のremarkを表示
-                        $displayRemark = $isPending ? $pendingRequest->correctionAttendanceDetail->remark : $attendance->remark;
+                        // 承認待ちなら申請理由を、そうでなければ勤怠備考を、どちらもなければ空を表示
+                        $displayRemark = $isPending ? $pendingRequest->correctionAttendanceDetail->remark : ($attendance ? $attendance->remark : '');
                     @endphp
                     <textarea name="remark" class="textarea-field @if($isPending) is-pending @endif" @if($isPending) readonly @endif>{{ old('remark', $displayRemark) }}</textarea>
                 </div>
