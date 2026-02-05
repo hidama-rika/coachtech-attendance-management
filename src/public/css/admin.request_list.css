@@ -6,10 +6,10 @@ body {
     width: 100%;
     height: auto;
     overflow-x: hidden;
+    background-color: #F0EFF2;
 }
 
 .list-container {
-    background-color: #F0EFF2;
     text-align: center;
     min-height: calc(100vh - 82px);
     /* 画面の高さからヘッダー分を引く */
