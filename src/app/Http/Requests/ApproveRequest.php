@@ -8,40 +8,19 @@ use Illuminate\Validation\Rule; //Rule::in などの Rule クラスを使った�
 class ApproveRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
+     * 権限を許可（管理者認証はMiddleware側で行われるため）
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
+     * 今回はURLパラメータ($requestId)で処理を行うため、
+     * フォーム入力値のバリデーションは不要
      */
     public function rules()
     {
-        return [
-            // statusは「承認」か「却下」のいずれかであることを保証
-            // これにより、FN051の「承認」処理へ安全に橋渡しできる
-            'status' => [
-                'required',
-                Rule::in([
-                    1, // 承認
-                    2  // 却下
-                ])
-            ],
-        ];
-    }
-
-    public function messages()
-    {
-        return [
-            'status.required' => '承認または却下を選択してください。',
-            'status.in'       => '不適切な操作が行われました。',
-        ];
+        return [];
     }
 }
