@@ -296,11 +296,13 @@ main.admin-page .form-row-date {
 }
 
 .staff-page .textarea-field {
-    line-height: 70px;
+    line-height: 1.5;
+    padding: 10px;
     margin-left: 120px;
     display: block;
     text-align: left;
-    overflow: hidden;
+    overflow-y: auto;
+    /* 文字が多い場合はスクロール可能に */
 }
 
 /* --- エラーメッセージ表示エリア (FN039) --- */
