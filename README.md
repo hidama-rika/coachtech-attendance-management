@@ -125,7 +125,7 @@ view ファイルの作成
             （一度キーを空にして、php artisan key:generate --env=testingを実行後、
             編集したらphp artisan config:clearを実行）
 
-        DB_CONNECTION=mysql
+        DB_CONNECTION=mysql_test
         DB_HOST=mysql
         DB_PORT=3306
         DB_DATABASE=demo_test
