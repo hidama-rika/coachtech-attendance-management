@@ -19,6 +19,11 @@ class RequestController extends Controller
      */
     public function index()
     {
+        // 追加：もし管理者なら adminIndex メソッドの内容を返す
+        if (auth()->user() && auth()->user()->role === 1) {
+            return $this->adminIndex();
+        }
+
         $user = Auth::user();
 
         // 自分の申請を取得（リレーションで勤怠日などを表示）
