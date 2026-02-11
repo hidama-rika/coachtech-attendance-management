@@ -121,12 +121,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // 管理者の修正申請一覧の表示 (FN047, FN048)
     // --- 【重要】申請一覧画面 (PG06/PG12 共通パス) ---
     // 一般ユーザーと管理者で同じURLを使用し、roleで呼び出すコントローラーを切り替える
-    Route::get('/stamp_correction_request/list', function () {
-        if (auth()->user() && auth()->user()->role === 1) { // 1: 管理者
-            return app(RequestController::class)->adminIndex();
-        }
-        return app(RequestController::class)->index(); // 一般ユーザー
-    })->name('request.list');
+    Route::get('/stamp_correction_request/list', [RequestController::class, 'index'])->name('request.list');
 
 
     // 管理者専用ルートのグループ（後ほど role で判定）
