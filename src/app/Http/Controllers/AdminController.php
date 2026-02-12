@@ -85,14 +85,24 @@ class AdminController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // 1. バリデーション
+        // 1. バリデーションの強化
         $request->validate([
             'check_in'  => 'required',
             'check_out' => 'required|after:check_in',
             'remark'    => 'required',
+            // 休憩データのバリデーション（スタッフ用リクエストの設定に準拠）
+            'rests.*.start' => 'nullable|after_or_equal:check_in|before:check_out',
+            'rests.*.end'   => 'nullable|after:rests.*.start|before_or_equal:check_out',
+            'new_rest.start' => 'nullable|after_or_equal:check_in|before:check_out',
+            'new_rest.end'   => 'nullable|after:new_rest.start|before_or_equal:check_out',
         ], [
-            'check_out.after' => '出勤時間もしくは退勤時間が不適切な値です', // FN039
-            'remark.required' => '備考を記入してください', // FN039
+            'check_out.after' => '出勤時間もしくは退勤時間が不適切な値です',
+            'remark.required' => '備考を記入してください',
+            // 休憩時間用のエラーメッセージ（スタッフ用と統一）
+            'rests.*.start.before' => '休憩時間が不適切な値です',
+            'rests.*.end.after' => '休憩時間もしくは退勤時間が不適切な値です',
+            'new_rest.start.before' => '休憩時間が不適切な値です',
+            'new_rest.end.before_or_equal' => '休憩時間もしくは退勤時間が不適切な値です',
         ]);
 
         DB::transaction(function () use ($request, $id) {
