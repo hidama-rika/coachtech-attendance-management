@@ -95,8 +95,6 @@ view ファイルの作成
     ・認証機能（Fortify）
         php artisan vendor:publish --provider="Laravel\Fortify\FortifyServiceProvider"
 
-    ・シンボリックリンク
-        php artisan storage:link
 
 ## テスト環境の準備と実行
 
@@ -107,9 +105,9 @@ view ファイルの作成
             'url' => env('DATABASE_URL'),
             'host' => env('DB_HOST', 'mysql'),
             'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_DATABASE', 'demo_test'),
-            'username' => env('DB_USERNAME', 'root'),
-            'password' => env('DB_PASSWORD', 'root'),
+            'database' => 'demo_test',
+            'username' => 'root',
+            'password' => 'root',
             　　・・・以下mysqlと同じ記述
         ]
 
@@ -138,7 +136,7 @@ view ファイルの作成
         <server name="DB_DATABASE" value="demo_test"/>
 
     ・テスト用データベースの作成
-        php artisan migrate --seed --env=testing
+        php artisan migrate --env=testing
 
     テスト実行前に、php artisan config:clearを実行すること。
 
