@@ -107,12 +107,12 @@ class RequestController extends Controller
     /**
      * 【管理者側】申請詳細の確認画面 (FN050)
      */
-    public function adminShow($requestId)
+    public function adminShow($attendance_correct_request_id)
     {
         // 承認待ちの内容を表示
         // ★修正後の休憩内容（restDetails）も一緒にロードするように追加
         $request = AttendanceCorrectRequest::with(['user', 'attendance', 'correctionAttendanceDetail', 'restDetails'])
-            ->findOrFail($requestId);
+            ->findOrFail($attendance_correct_request_id);
 
         return view('admin.request.approve', compact('request'));
     }
@@ -120,9 +120,9 @@ class RequestController extends Controller
     /**
      * 【管理者側】承認処理の実行 (FN051)
      */
-    public function approve($requestId)
+    public function approve($attendance_correct_request_id)
     {
-        $request = AttendanceCorrectRequest::findOrFail($requestId);
+        $request = AttendanceCorrectRequest::findOrFail($attendance_correct_request_id);
 
         DB::transaction(function () use ($request) {
             // 1. 勤怠本体の更新

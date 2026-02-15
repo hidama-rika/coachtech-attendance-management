@@ -79,7 +79,7 @@ class ID_15_AdminRequestProcessTest extends TestCase
         $staff = User::factory()->create(['name' => '詳細確認スタッフ', 'role' => 0]);
         $attendance = Attendance::create(['user_id' => $staff->id, 'date' => '2026-02-01', 'check_in' => '09:00']);
 
-        $request = AttendanceCorrectRequest::create([
+        $attendance_correct_request = AttendanceCorrectRequest::create([
             'user_id' => $staff->id,
             'attendance_id' => $attendance->id,
             'status' => AttendanceCorrectRequest::STATUS_PENDING,
@@ -87,14 +87,14 @@ class ID_15_AdminRequestProcessTest extends TestCase
         ]);
 
         // 修正後の予定データ（CorrectionAttendanceDetail）も作成
-        $request->correctionAttendanceDetail()->create([
+        $attendance_correct_request->correctionAttendanceDetail()->create([
             'check_in' => '10:00',
             'check_out' => '19:00',
             'remark' => '詳細内容の検証'
         ]);
 
         // 管理者用承認画面へアクセス
-        $response = $this->actingAs($admin)->get("/admin/stamp_correction_request/approve/{$request->id}");
+        $response = $this->actingAs($admin)->get("/stamp_correction_request/approve/{$attendance_correct_request->id}");
 
         $response->assertStatus(200);
         $response->assertSee('詳細確認スタッフ');
@@ -113,7 +113,7 @@ class ID_15_AdminRequestProcessTest extends TestCase
         // 元の勤怠
         $attendance = Attendance::create(['user_id' => $staff->id, 'date' => '2026-02-01', 'check_in' => '09:00', 'check_out' => '18:00']);
 
-        $request = AttendanceCorrectRequest::create([
+        $attendance_correct_request = AttendanceCorrectRequest::create([
             'user_id' => $staff->id,
             'attendance_id' => $attendance->id,
             'status' => AttendanceCorrectRequest::STATUS_PENDING,
@@ -121,20 +121,20 @@ class ID_15_AdminRequestProcessTest extends TestCase
         ]);
 
         // 修正したい内容
-        $request->correctionAttendanceDetail()->create([
+        $attendance_correct_request->correctionAttendanceDetail()->create([
             'check_in' => '11:00',
             'check_out' => '20:00',
             'remark' => '承認実行テスト'
         ]);
 
         // 承認ボタン押下（POSTリクエスト）
-        $response = $this->actingAs($admin)->post("/admin/stamp_correction_request/approve/{$request->id}");
+        $response = $this->actingAs($admin)->post("/stamp_correction_request/approve/{$attendance_correct_request->id}");
 
         // 申請一覧へリダイレクトされることを確認
         $response->assertRedirect(route('request.list'));
 
         // 1. 申請ステータスが「承認済み」に更新されているか
-        $this->assertEquals(AttendanceCorrectRequest::STATUS_APPROVED, $request->fresh()->status);
+        $this->assertEquals(AttendanceCorrectRequest::STATUS_APPROVED, $attendance_correct_request->fresh()->status);
 
         // 2. 元の勤怠データ（Attendance）が修正後の内容に更新されているか
         $this->assertEquals('11:00:00', $attendance->fresh()->check_in);
