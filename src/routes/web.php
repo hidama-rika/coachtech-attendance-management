@@ -123,6 +123,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // 一般ユーザーと管理者で同じURLを使用し、roleで呼び出すコントローラーを切り替える
     Route::get('/stamp_correction_request/list', [RequestController::class, 'index'])->name('request.list');
 
+    // --- 【重要】修正申請承認画面 (PG13 設計書準拠) ---
+    // 設計書に基づき、/admin プレフィックスを外した位置に定義
+    Route::get('/stamp_correction_request/approve/{attendance_correct_request_id}', [RequestController::class, 'adminShow'])
+        ->middleware('admin')
+        ->name('admin.request.show');
+
+    // 修正申請の承認処理
+    Route::post('/stamp_correction_request/approve/{attendance_correct_request_id}', [RequestController::class, 'approve'])
+        ->middleware('admin')
+        ->name('admin.request.approve');
+
 
     // 管理者専用ルートのグループ（後ほど role で判定）
     // ❗ middleware に 'admin' を追加することで、一般ユーザーをブロック
@@ -146,11 +157,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // 特定スタッフの月次勤怠をCSV出力 (FN045)
         Route::get('/attendance/staff/{id}/export', [AdminController::class, 'exportCsv'])->name('admin.attendance.export');
 
-        // 申請詳細の確認画面 (FN050)
-        Route::get('/stamp_correction_request/approve/{attendance_correct_request_id}', [RequestController::class, 'adminShow'])->name('admin.request.show');
-
-        // 修正申請の承認処理 (FN051)
-        // ※詳細画面から「承認」ボタンを押した際の保存アクション
-        Route::post('/stamp_correction_request/approve/{attendance_correct_request_id}', [RequestController::class, 'approve'])->name('admin.request.approve');
+        // ※ 承認画面(PG13)は設計書に従い、プレフィックス外に移動したためここでは定義しない
     });
 });
