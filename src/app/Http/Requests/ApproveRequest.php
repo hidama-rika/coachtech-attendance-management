@@ -15,12 +15,21 @@ class ApproveRequest extends FormRequest
         return true;
     }
 
-    /**
-     * 今回はURLパラメータ($requestId)で処理を行うため、
-     * フォーム入力値のバリデーションは不要
-     */
     public function rules()
     {
-        return [];
+        return [
+            // 基本設計書の「入力必須、存在する申請IDであること」を実装
+            'attendance_correct_request_id' => ['required', 'exists:attendance_correct_requests,id'],
+        ];
+    }
+
+    /**
+    * URLパラメータ（パス変数）をバリデーション対象にマージする
+    */
+    public function validationData()
+    {
+        return array_merge($this->all(), [
+            'attendance_correct_request_id' => $this->route('attendance_correct_request_id'),
+        ]);
     }
 }
