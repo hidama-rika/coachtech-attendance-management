@@ -9,6 +9,7 @@ use App\Models\CorrectionAttendanceDetail;
 use App\Models\Rest;
 use Carbon\Carbon;
 use App\Http\Requests\AttendanceCorrectionRequest;
+use App\Http\Requests\ApproveRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -106,42 +107,41 @@ class RequestController extends Controller
 
     /**
      * 【管理者側】申請詳細の確認画面 (FN050)
+     * 引数を ApproveRequest に変更し、バリデーションを自動実行させる
      */
-    public function adminShow($attendance_correct_request_id)
+    public function adminShow(ApproveRequest $request, $attendance_correct_request_id)
     {
-        // 承認待ちの内容を表示
-        // ★修正後の休憩内容（restDetails）も一緒にロードするように追加
-        $request = AttendanceCorrectRequest::with(['user', 'attendance', 'correctionAttendanceDetail', 'restDetails'])
+        $attendanceRequest = AttendanceCorrectRequest::with(['user', 'attendance', 'correctionAttendanceDetail', 'restDetails'])
             ->findOrFail($attendance_correct_request_id);
 
-        return view('admin.request.approve', compact('request'));
+        return view('admin.request.approve', ['request' => $attendanceRequest]);
     }
 
     /**
      * 【管理者側】承認処理の実行 (FN051)
+     * 第一引数を ApproveRequest に設定
      */
-    public function approve($attendance_correct_request_id)
+    public function approve(ApproveRequest $request, $attendance_correct_request_id)
     {
-        $request = AttendanceCorrectRequest::findOrFail($attendance_correct_request_id);
+        // バリデーション済みのIDで取得
+        $attendanceRequest = AttendanceCorrectRequest::findOrFail($attendance_correct_request_id);
 
-        DB::transaction(function () use ($request) {
+        DB::transaction(function () use ($attendanceRequest) {
             // 1. 勤怠本体の更新
-            $attendance = $request->attendance;
+            $attendance = $attendanceRequest->attendance;
             $attendance->update([
-                'check_in' => $request->correctionAttendanceDetail->check_in,
-                'check_out' => $request->correctionAttendanceDetail->check_out,
+                'check_in' => $attendanceRequest->correctionAttendanceDetail->check_in,
+                'check_out' => $attendanceRequest->correctionAttendanceDetail->check_out,
             ]);
 
-            // 2. ★休憩データの更新・追加処理（承認時に実際のrestsテーブルに反映）
-            foreach ($request->restDetails as $detail) {
+            // 2. 休憩データの更新・追加処理
+            foreach ($attendanceRequest->restDetails as $detail) {
                 if ($detail->rest_id) {
-                    // 既存休憩の更新
                     Rest::find($detail->rest_id)->update([
                         'start_time' => $detail->start_time,
                         'end_time' => $detail->end_time,
                     ]);
                 } else {
-                    // 新規休憩の追加
                     $attendance->rests()->create([
                         'start_time' => $detail->start_time,
                         'end_time' => $detail->end_time,
@@ -150,7 +150,7 @@ class RequestController extends Controller
             }
 
             // 3. 申請ステータスを"承認済み"に変更
-            $request->update(['status' => AttendanceCorrectRequest::STATUS_APPROVED]);
+            $attendanceRequest->update(['status' => AttendanceCorrectRequest::STATUS_APPROVED]);
         });
 
         return redirect()->route('request.list')->with('message', '承認しました');
