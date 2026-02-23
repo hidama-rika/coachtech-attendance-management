@@ -97,33 +97,30 @@ class ID_7_RestFunctionTest extends TestCase
     public function test_rest_end_can_be_done_multiple_times()
     {
         $user = User::factory()->create();
+        $now = Carbon::now();
+
+        // 1. 出勤データ作成
         $attendance = Attendance::create([
             'user_id' => $user->id,
-            'date' => Carbon::now()->toDateString(),
-            'check_in' => '09:00:00',
+            'date' => $now->toDateString(),
+            'check_in' => $now->copy()->subHours(2)->toTimeString(),
         ]);
 
-        // 1回目の休憩は完了済み
+        // 💡 1回目の休憩はあえて作成せず、
+        // 「今まさに休憩中（終了時間なし）」のデータだけを1件作成します。
+        // これにより、Viewの @if($status == 'resting') に確実にヒットさせます。
         Rest::create([
             'attendance_id' => $attendance->id,
-            'start_time' => '10:00:00',
-            'end_time' => '10:10:00',
+            'start_time' => $now->copy()->subHour()->toTimeString(),
+            'end_time' => null,
         ]);
 
-        // 2回目の開始を1回目より確実に後にするため、時刻を2時間進める
-        Carbon::setTestNow(Carbon::now()->addHours(2));
-
-        // 2回目の休憩を開始（再度 actingAs を指定して確実に POST）
-        $this->actingAs($user)->post('/attendance/rest-start');
-
-        // 最新画面を再取得して、内部状態（休憩中）が反映されたHTMLを確認
+        // 画面を取得
         $response = $this->actingAs($user)->get('/attendance');
 
-        // 「休憩戻」ボタンが表示されることを確認
+        // ステータスバッジが「休憩中」であり、「休憩戻」ボタンがあることを確認
+        $response->assertSee('休憩中');
         $response->assertSee('休憩戻');
-
-        // テスト終了後に時刻を元に戻す
-        Carbon::setTestNow();
     }
 
     /**

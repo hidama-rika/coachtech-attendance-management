@@ -61,24 +61,24 @@ class RegisterRequest extends FormRequest
      * @return array
      */
     public function messages()
-{
-    return [
-        // name (仕様書 FN003 - 1. お名前を入力してください)
-        'name.required' => 'お名前を入力してください',
+    {
+        return [
+            // name (仕様書 FN003 - 1. お名前を入力してください)
+            'name.required' => 'お名前を入力してください',
 
-        // email (仕様書 FN003 - 2. メールアドレスを入力してください)
-        'email.required' => 'メールアドレスを入力してください',
+            // email (仕様書 FN003 - 2. メールアドレスを入力してください)
+            'email.required' => 'メールアドレスを入力してください',
 
-        // password (仕様書 FN003 - 3. パスワードを入力してください / 2.1. パスワードは8文字以上で入力してください)
-        'password.required' => 'パスワードを入力してください',
-        'password.min' => 'パスワードは8文字以上で入力してください',
+            // password (仕様書 FN003 - 3. パスワードを入力してください / 2.1. パスワードは8文字以上で入力してください)
+            'password.required' => 'パスワードを入力してください',
+            'password.min' => 'パスワードは8文字以上で入力してください',
 
-        // password_confirmation (messagesでpassword_confirmationを参照するには、rulesに明記が必要)
-        'password_confirmation.required' => 'パスワードを入力してください', // FN003 3.と合わせて「未入力」のメッセージを統一
-        'password_confirmation.min' => 'パスワードは8文字以上で入力してください',
+            // password_confirmation (messagesでpassword_confirmationを参照するには、rulesに明記が必要)
+            'password_confirmation.required' => 'パスワードを入力してください', // FN003 3.と合わせて「未入力」のメッセージを統一
+            'password_confirmation.min' => 'パスワードは8文字以上で入力してください',
 
-        // password.confirmed (仕様書 FN003 - 3.1. パスワードと一致しません)
-        'password.confirmed' => 'パスワードと一致しません',
-    ];
-}
+            // password.confirmed (仕様書 FN003 - 3.1. パスワードと一致しません)
+            'password.confirmed' => 'パスワードと一致しません',
+        ];
+    }
 }
