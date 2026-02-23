@@ -95,7 +95,6 @@ view ファイルの作成
     ・認証機能（Fortify）
         php artisan vendor:publish --provider="Laravel\Fortify\FortifyServiceProvider"
 
-
 ## テスト環境の準備と実行
 
     ・テスト用データベースの準備（config/database.phpの編集）
@@ -181,6 +180,8 @@ view ファイルの作成
 ![table2](attendances_20260206.png)
 ![table3](rests_20260206.png)
 ![table4](attendance_correct_requests_20260206.png)
+※reason＝remark。現時点ではreasonでremarkの値を表示している。
+※reasonは、後の申請理由のカテゴリ化を想定して設定している。
 ![table5](correction_attendance_details_20260206.png)
 ![table6](correction_rest_details_20260206.png)
 
