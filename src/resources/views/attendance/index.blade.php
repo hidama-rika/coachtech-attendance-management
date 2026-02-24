@@ -95,7 +95,7 @@
 
                 @elseif($status == 'finished')
                     {{-- 退勤後：お疲れ様表示 --}}
-                    <p class="finish-message">お疲れ様でした！</p>
+                    <p class="finish-message">お疲れ様でした。</p>
                 @endif
             </div>
         </div>
